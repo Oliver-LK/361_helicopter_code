@@ -1,5 +1,15 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements 
+// CREATE DATE   : 7/3/2023
+// PURPOSE       : ADC handler 
+//                 
+// ***********************************************************
+
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and Drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"
@@ -17,32 +27,18 @@
 #include "display.h"
 
 
-
-
-
-
-//*****************************************************************************
-//
 // The interrupt handler for the for SysTick interrupt.
-//
-//*****************************************************************************
 void SysTickIntHandler(void)
 {
-    //
     // Initiate a conversion
-    //
     ADCProcessorTrigger(ADC0_BASE, 3);
     g_ulSampCnt++;
 }
 
-//*****************************************************************************
-//
+
 // The handler for the ADC conversion complete interrupt.
 // Writes to the circular buffer.
-//
-//*****************************************************************************
-void
-ADCIntHandler(void)
+void ADCIntHandler(void)
 {
     uint32_t ulValue;
 
@@ -57,5 +53,4 @@ ADCIntHandler(void)
     // Clean up, clearing the interrupt
     ADCIntClear(ADC0_BASE, 3);
 }
-
 

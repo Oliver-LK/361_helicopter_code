@@ -1,5 +1,15 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements 
+// CREATE DATE   : 17/3/2023
+// PURPOSE       : Inilisation module
+//                 
+// ***********************************************************
+
+// Libaries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules Imports
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"

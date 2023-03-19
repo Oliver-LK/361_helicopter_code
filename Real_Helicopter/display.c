@@ -1,5 +1,16 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements 
+// CREATE DATE   : 17/3/2023
+// PURPOSE       : Modules that controls the LED display on
+//                 Tiva board
+//                 
+// ***********************************************************
+
+// Libaries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and Drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"

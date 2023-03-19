@@ -1,5 +1,15 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements 
+// CREATE DATE   : 17/3/2023
+// PURPOSE       : The main module with int main() loop
+//                 
+// ***********************************************************
+
+// Libaries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"
@@ -17,6 +27,8 @@
 #include "ADC.h"
 #include "buttons4.h"
 
+
+// Global Constants
 #define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
 #define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
 
@@ -40,7 +52,6 @@ int main(void) {
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     uint8_t butState;
-    //
     // Enable interrupts to the processor.
     IntMasterEnable();
 
