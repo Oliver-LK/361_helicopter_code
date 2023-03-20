@@ -28,6 +28,8 @@
 #include "buttons4.h"
 
 
+
+
 // Global Constants
 #define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
 #define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
@@ -45,13 +47,9 @@ int main(void) {
 
     uint16_t i;
     int32_t sum;
-    uint8_t upPushes = 0;
+    // Calls initlisation function
+    do_init();
 
-    initClock ();
-    initADC ();
-    initDisplay ();
-    initCircBuf (&g_inBuffer, BUF_SIZE);
-    uint8_t butState;
     // Enable interrupts to the processor.
     IntMasterEnable();
 
@@ -69,19 +67,25 @@ int main(void) {
 
 
 
-        displayMeanVal (adc_av, g_ulSampCnt);
-
-        // updateButtons ();       // Poll the buttons
-        // check state of each button and display if a change is detected
-        butState = checkButton (UP);
-        switch (butState)
+//        displayMeanVal (adc_av, g_ulSampCnt);
+        display_change();
+        switch(displaystate)
         {
-        case PUSHED:
-            ++upPushes;
-            break;
+            case(meanState):
+                displayMeanVal(adc_av, g_ulSampCnt);
+                break;
 
-        // Do nothing if state is NO_CHANGE or button released.
+            case(percentageState):
+                displayPercentage();
+                break;
+
+            case(blankState):
+                displayBlank();
+                break;
+
         }
+//
+
 
     }
 

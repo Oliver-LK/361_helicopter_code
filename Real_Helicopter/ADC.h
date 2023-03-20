@@ -5,6 +5,9 @@
 //                 
 // **********************************************************
 
+
+#ifndef ADC_H
+#define ADC_H
 // Libraries
 #include <stdint.h>
 #include <stdbool.h>
@@ -35,3 +38,5 @@ uint32_t g_ulSampCnt;       // Counter for the interrupts
 void SysTickIntHandler(void);
 
 void ADCIntHandler(void);
+
+#endif

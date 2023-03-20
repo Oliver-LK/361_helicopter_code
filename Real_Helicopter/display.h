@@ -6,6 +6,8 @@
 //                 
 // ***********************************************************
 
+#ifndef DISPLAY_H
+#define DISPLAY_H
 // Libaries
 #include <stdint.h>
 #include <stdbool.h>
@@ -24,5 +26,20 @@
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
 
+typedef enum {  meanState = 0,
+                percentageState = 1,
+                blankState = 2
+} displayState_t;
+
+displayState_t displaystate;
+
 // Function Declarations
 void displayMeanVal(uint16_t meanVal, uint32_t count);
+
+void displayPercentage(void);
+
+void displayBlank(void);
+
+void display_change(void);
+
+#endif

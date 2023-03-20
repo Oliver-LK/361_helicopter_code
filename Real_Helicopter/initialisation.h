@@ -5,9 +5,13 @@
 //                 
 // ***********************************************************
 
+#ifndef INIT_H
+#define INIT_H
+
 // Libaries
 #include <stdint.h>
 #include <stdbool.h>
+#include "stdlib.h"
 
 // Modules and Drivers
 #include "inc/hw_memmap.h"
@@ -24,6 +28,7 @@
 #include "OrbitOLED/OrbitOLEDInterface.h"
 #include "display.h"
 #include "ADC.h"
+#include "buttons4.h"
 
 // Function Decelerations
 void initClock (void);
@@ -31,3 +36,9 @@ void initClock (void);
 void initDisplay(void);
 
 void initADC (void);
+
+uint32_t* initCircBuf (circBuf_t *buffer, uint32_t size);
+
+void do_init(void);
+
+#endif

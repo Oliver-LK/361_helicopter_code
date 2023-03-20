@@ -44,3 +44,49 @@ void displayMeanVal(uint16_t meanVal, uint32_t count)
     usnprintf (string, sizeof(string), "Sample # %5d", count);
     OLEDStringDraw (string, 0, 3);
 }
+
+void displayPercentage(void)
+{
+    char string[17];  // 16 characters across the display
+
+    OLEDStringDraw ("Hi World", 0, 0);
+
+    // Form a new string for the line.  The maximum width specified for the
+    //  number field ensures it is displayed right justified.
+    usnprintf (string, sizeof(string), "Mean ADC = %4d", 1);
+    // Update line on display.
+    OLEDStringDraw (string, 0, 1);
+
+    usnprintf (string, sizeof(string), "Sample # %5d", 5);
+    OLEDStringDraw (string, 0, 3);
+}
+
+
+void displayBlank(void)
+{
+//    char string[17];  // 16 characters across the display
+
+    OLEDStringDraw ("                ", 0, 0);
+    OLEDStringDraw ("                ", 0, 1);
+    OLEDStringDraw ("                ", 0, 3);
+
+}
+
+
+// Could be chnaged to interrupt
+void display_change(void)
+{
+    updateButtons ();
+//    uint8_t butState = checkButton (UP);
+
+    switch (checkButton (UP))
+    {
+         case PUSHED:
+             if(displaystate == blankState) {
+                 displaystate = meanState;
+             } else {
+                 displaystate++;
+             }
+             displayBlank();
+    }
+}

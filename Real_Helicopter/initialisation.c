@@ -8,6 +8,7 @@
 // Libaries
 #include <stdint.h>
 #include <stdbool.h>
+#include "stdlib.h"
 
 // Modules Imports
 #include "inc/hw_memmap.h"
@@ -25,6 +26,7 @@
 #include "initialisation.h"
 #include "display.h"
 #include "ADC.h"
+#include "buttons4.h"
 
 
 void initClock (void)
@@ -87,4 +89,31 @@ void initADC (void)
     //
     // Enable interrupts for ADC0 sequence 3 (clears any outstanding interrupts)
     ADCIntEnable(ADC0_BASE, 3);
+}
+
+
+// *******************************************************
+// initCircBuf: Initialise the circBuf instance. Reset both indices to
+// the start of the buffer.  Dynamically allocate and clear the the
+// memory and return a pointer for the data.  Return NULL if
+// allocation fails.
+uint32_t * initCircBuf (circBuf_t *buffer, uint32_t size)
+{
+    buffer->windex = 0;
+    buffer->rindex = 0;
+    buffer->size = size;
+    buffer->data =
+        (uint32_t *) calloc (size, sizeof(uint32_t));
+    return buffer->data;
+
+}
+
+
+void do_init(void)
+{
+    initClock ();
+    initADC ();
+    initDisplay ();
+    initCircBuf (&g_inBuffer, BUF_SIZE);
+    initButtons ();
 }
