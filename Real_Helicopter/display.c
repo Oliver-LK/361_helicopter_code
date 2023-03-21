@@ -28,7 +28,7 @@
 #include "ADC.h"
 
 
-
+// Didsplays the ,maen value o n the tiva dispay
 void displayMeanVal(uint16_t meanVal, uint32_t count)
 {
     char string[17];  // 16 characters across the display
@@ -45,15 +45,17 @@ void displayMeanVal(uint16_t meanVal, uint32_t count)
     OLEDStringDraw (string, 0, 3);
 }
 
-void displayPercentage(void)
+
+// dipslay s the percenage
+void displayPercentage(int16_t percentage)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("Hi World", 0, 0);
+    OLEDStringDraw ("Percentage demo", 0, 0);
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Mean ADC = %4d", 1);
+    usnprintf (string, sizeof(string), "Mean ADC = %4d", percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
@@ -62,6 +64,7 @@ void displayPercentage(void)
 }
 
 
+//displays a blank screen
 void displayBlank(void)
 {
 //    char string[17];  // 16 characters across the display
@@ -73,20 +76,18 @@ void displayBlank(void)
 }
 
 
-// Could be chnaged to interrupt
+// changes the enum of the display amd updates it
 void display_change(void)
 {
-    updateButtons ();
-//    uint8_t butState = checkButton (UP);
+    displayBlank();
 
-    switch (checkButton (UP))
-    {
-         case PUSHED:
-             if(displaystate == blankState) {
-                 displaystate = meanState;
-             } else {
-                 displaystate++;
-             }
-             displayBlank();
-    }
+     if(displaystate == blankState) {
+         displaystate = percentageState;
+     } else {
+         displaystate++;
+     }
+
+
+
+
 }

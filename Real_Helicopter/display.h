@@ -26,8 +26,8 @@
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
 
-typedef enum {  meanState = 0,
-                percentageState = 1,
+typedef enum {  percentageState = 0,
+                meanState = 1,
                 blankState = 2
 } displayState_t;
 
@@ -36,7 +36,7 @@ displayState_t displaystate;
 // Function Declarations
 void displayMeanVal(uint16_t meanVal, uint32_t count);
 
-void displayPercentage(void);
+void displayPercentage(int16_t percentage);
 
 void displayBlank(void);
 

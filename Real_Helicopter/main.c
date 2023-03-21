@@ -34,12 +34,24 @@
 #define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
 #define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
 
-uint16_t percentage_calc(adc_av)
+int16_t percentage_calc(adc_av) // this wrong mean - init value * 100
 {
-    uint16_t percentage = 100 - (adc_av)/(ADC_max - ADC_min);
+    int16_t percentage = 100 - (adc_av)/(ADC_max - ADC_min);
 
     return percentage;
 
+}
+
+
+// Detects a if a button is pushed and returns a bool
+bool button_event(void)
+{
+    updateButtons ();
+    if(checkButton (UP) == 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -53,6 +65,10 @@ int main(void) {
     // Enable interrupts to the processor.
     IntMasterEnable();
 
+    // in this order
+    // ====add delay cos sabine says so====
+    // set init alt value to meanVal
+
     while (1)
     {
         //
@@ -63,20 +79,24 @@ int main(void) {
             sum = sum + readCircBuf (&g_inBuffer);
         // Calculate and display the rounded mean of the buffer contents
         uint16_t adc_av = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE;
-        uint8_t percentage = percentage_calc(adc_av);
-
+        int16_t percentage = percentage_calc(adc_av);
 
 
 //        displayMeanVal (adc_av, g_ulSampCnt);
-        display_change();
+        if(button_event() == true) {
+            display_change();
+        }
+
+
         switch(displaystate)
         {
-            case(meanState):
-                displayMeanVal(adc_av, g_ulSampCnt);
-                break;
 
             case(percentageState):
-                displayPercentage();
+                displayPercentage(percentage);
+                break;
+
+            case(meanState):
+                displayMeanVal(adc_av, g_ulSampCnt);
                 break;
 
             case(blankState):
