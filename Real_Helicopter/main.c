@@ -29,14 +29,16 @@
 
 
 
-
 // Global Constants
 #define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
 #define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
 
-int16_t percentage_calc(adc_av) // this wrong mean - init value * 100
+#define ADC_range (ADC_max - ADC_min)
+
+int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset) // this wrong mean - init value * 100
 {
-    int16_t percentage = 100 - (adc_av)/(ADC_max - ADC_min);
+
+    int32_t percentage = ((  ADC_offset - adc_av )*100/ADC_range);
 
     return percentage;
 
@@ -44,10 +46,10 @@ int16_t percentage_calc(adc_av) // this wrong mean - init value * 100
 
 
 // Detects a if a button is pushed and returns a bool
-bool button_event(void)
+bool button_event(uint8_t butNum)
 {
     updateButtons ();
-    if(checkButton (UP) == 0) {
+    if(checkButton (butNum) == 0) {
         return true;
     } else {
         return false;
@@ -58,7 +60,8 @@ bool button_event(void)
 int main(void) {
 
     uint16_t i;
-    int32_t sum;
+    int32_t sum = 0;
+
     // Calls initlisation function
     do_init();
 
@@ -66,8 +69,15 @@ int main(void) {
     IntMasterEnable();
 
     // in this order
-    // ====add delay cos sabine says so====
+
     // set init alt value to meanVal
+
+    SysCtlDelay (3000000);
+
+    for (i = 0; i < BUF_SIZE; i++)
+                sum = sum + readCircBuf (&g_inBuffer);
+    uint16_t ADC_offset = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE;
+
 
     while (1)
     {
@@ -77,20 +87,25 @@ int main(void) {
         sum = 0;
         for (i = 0; i < BUF_SIZE; i++)
             sum = sum + readCircBuf (&g_inBuffer);
+
         // Calculate and display the rounded mean of the buffer contents
-        uint16_t adc_av = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE;
-        int16_t percentage = percentage_calc(adc_av);
+        int32_t adc_av =  (2 * sum + BUF_SIZE) / 2 / BUF_SIZE ;
+        int32_t percentage = percentage_calc(adc_av, ADC_offset);
 
 
 //        displayMeanVal (adc_av, g_ulSampCnt);
-        if(button_event() == true) {
+        if(button_event(UP) == PUSHED) {
             display_change();
         }
+
+        if(button_event(LEFT) == PUSHED) {
+            ADC_offset = adc_av;
+        }
+
 
 
         switch(displaystate)
         {
-
             case(percentageState):
                 displayPercentage(percentage);
                 break;
