@@ -33,7 +33,7 @@ void displayMeanVal(uint16_t meanVal, uint32_t count)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("ADC demo 1", 0, 0);
+    OLEDStringDraw ("ADC Display", 0, 0);
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
@@ -51,7 +51,7 @@ void displayPercentage(int16_t percentage)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("Percentage demo", 0, 0);
+    OLEDStringDraw ("Percentage Dsply", 0, 0);
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
@@ -59,8 +59,7 @@ void displayPercentage(int16_t percentage)
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
-    usnprintf (string, sizeof(string), "Sample # %5d", 5);
-    OLEDStringDraw (string, 0, 3);
+
 }
 
 
