@@ -51,11 +51,11 @@ void displayPercentage(int16_t percentage)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("Percentage Dsply", 0, 0);
+    OLEDStringDraw ("Altitude  (%)", 0, 0);
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Mean ADC = %4d", percentage);
+    usnprintf (string, sizeof(string), "Percent = %4d", percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
