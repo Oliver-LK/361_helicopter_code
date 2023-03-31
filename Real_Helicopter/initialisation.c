@@ -27,6 +27,10 @@
 #include "display.h"
 #include "ADC.h"
 #include "buttons4.h"
+#include "yaw.h"
+
+
+
 
 
 void initClock (void)
@@ -109,6 +113,8 @@ uint32_t * initCircBuf (circBuf_t *buffer, uint32_t size)
 }
 
 
+
+
 void do_init(void)
 {
     initClock ();
@@ -116,4 +122,15 @@ void do_init(void)
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     initButtons ();
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
+    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+                   GPIO_DIR_MODE_IN);
+
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+                   GPIO_BOTH_EDGES);
+
+    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
+
+    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
 }

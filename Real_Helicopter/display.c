@@ -55,7 +55,7 @@ void displayPercentage(int16_t percentage)
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Percent = %4d", percentage);
+    usnprintf (string, sizeof(string), "Percent+ = %4d", percentage); //g_yaw_sum should be percentage.
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 

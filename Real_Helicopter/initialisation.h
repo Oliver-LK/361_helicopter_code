@@ -30,8 +30,12 @@
 #include "ADC.h"
 #include "buttons4.h"
 
+
+
 // Function Decelerations
 void initClock (void);
+
+
 
 void initDisplay(void);
 

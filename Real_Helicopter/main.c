@@ -26,6 +26,9 @@
 #include "display.h"
 #include "ADC.h"
 #include "buttons4.h"
+#include "yaw.h"
+
+
 
 
 
@@ -35,7 +38,10 @@
 
 #define ADC_range (ADC_max - ADC_min)
 
-int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset) // this wrong mean - init value * 100
+
+
+
+int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset)
 {
 
     int32_t percentage = ((  ADC_offset - adc_av )*100/ADC_range);
@@ -111,7 +117,7 @@ int main(void) {
                 break;
 
             case(meanState):
-                displayMeanVal(adc_av, g_ulSampCnt);
+                displayMeanVal(adc_av, get_yaw());
                 break;
 
             case(blankState):
@@ -119,6 +125,9 @@ int main(void) {
                 break;
 
         }
+
+
+
 //
 
 

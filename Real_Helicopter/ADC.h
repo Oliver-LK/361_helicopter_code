@@ -30,7 +30,7 @@
 #define BUF_SIZE 16
 #define SAMPLE_RATE_HZ 100
 
-// Global Constants
+// Global Variables
 circBuf_t g_inBuffer;       // Buffer of size BUF_SIZE integers (sample values)
 uint32_t g_ulSampCnt;       // Counter for the interrupts
 
