@@ -32,7 +32,17 @@
 #define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
 #define ADC_range (ADC_max - ADC_min)
 
+uint16_t give_adc_offset(void)
+{
+    uint16_t i;
+    int32_t sum = 0;
 
+    for (i = 0; i < BUF_SIZE; i++)
+                    sum = sum + readCircBuf (&g_inBuffer);
+        uint16_t ADC_offset = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE;
+
+    return ADC_offset;
+}
 
 int32_t give_adc_av(void)
 {

@@ -31,7 +31,6 @@
 
 
 
-
 void initClock (void)
 {
     // Set the clock rate to 20 MHz
@@ -107,7 +106,7 @@ int main(void) {
 
     for (i = 0; i < BUF_SIZE; i++)
                 sum = sum + readCircBuf (&g_inBuffer);
-    uint16_t ADC_offset = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE;
+    uint16_t ADC_offset = give_adc_offset();
 
 
     while (1)
