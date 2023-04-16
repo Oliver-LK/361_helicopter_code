@@ -8,6 +8,7 @@
 // Libaries
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // Modules and drivers
 #include "inc/hw_memmap.h"
@@ -22,45 +23,69 @@
 #include "utils/ustdlib.h"
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
-#include "initialisation.h"
 #include "display.h"
 #include "ADC.h"
 #include "buttons4.h"
 #include "yaw.h"
+#include "altitude.h"
 
 
 
 
-
-// Global Constants
-#define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
-#define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
-
-#define ADC_range (ADC_max - ADC_min)
-
-
-
-
-int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset)
+void initClock (void)
 {
-
-    int32_t percentage = ((  ADC_offset - adc_av )*100/ADC_range);
-
-    return percentage;
-
+    // Set the clock rate to 20 MHz
+    SysCtlClockSet (SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                   SYSCTL_XTAL_16MHZ);
+    //
+    // Set up the period for the SysTick timer.  The SysTick timer period is
+    // set as a function of the system clock.
+    SysTickPeriodSet(SysCtlClockGet() / SAMPLE_RATE_HZ);
+    //
+    // Register the interrupt handler
+    SysTickIntRegister(SysTickIntHandler);
+    //
+    // Enable interrupt and device
+    SysTickIntEnable();
+    SysTickEnable();
 }
 
 
-// Detects a if a button is pushed and returns a bool
-bool button_event(uint8_t butNum)
+// *******************************************************
+// initCircBuf: Initialise the circBuf instance. Reset both indices to
+// the start of the buffer.  Dynamically allocate and clear the the
+// memory and return a pointer for the data.  Return NULL if
+// allocation fails.
+
+
+
+void do_init(void)
 {
-    updateButtons ();
-    if(checkButton (butNum) == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    initClock ();
+    initADC ();
+    initDisplay ();
+    initCircBuf (&g_inBuffer, BUF_SIZE);
+    initButtons ();
+
+    //  Interupt Pins init
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+//    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+//                   GPIO_DIR_MODE_IN);
+
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+                   GPIO_BOTH_EDGES);
+
+    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
+
+    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
 }
+
+//#############################################  END OF INIT ########################################
+
+
+
 
 
 int main(void) {
@@ -87,16 +112,9 @@ int main(void) {
 
     while (1)
     {
-        //
-        // Background task: calculate the (approximate) mean of the values in the
-        // circular buffer and display it, together with the sample number.
-        sum = 0;
-        for (i = 0; i < BUF_SIZE; i++)
-            sum = sum + readCircBuf (&g_inBuffer);
-
         // Calculate and display the rounded mean of the buffer contents
-        int32_t adc_av =  (2 * sum + BUF_SIZE) / 2 / BUF_SIZE ;
-        int32_t percentage = percentage_calc(adc_av, ADC_offset);
+        int32_t adc_av =  give_adc_av();
+        int32_t percentage = give_adc_percent(adc_av, ADC_offset);
 
 
 //        displayMeanVal (adc_av, g_ulSampCnt);
@@ -109,7 +127,6 @@ int main(void) {
         }
 
 
-
         switch(displaystate)
         {
             case(percentageState):
@@ -117,7 +134,7 @@ int main(void) {
                 break;
 
             case(meanState):
-                displayMeanVal(adc_av, get_yaw());
+                displayMeanVal(adc_av, get_yaw());  // remove get_yaw()
                 break;
 
             case(blankState):
@@ -125,11 +142,6 @@ int main(void) {
                 break;
 
         }
-
-
-
-//
-
 
     }
 

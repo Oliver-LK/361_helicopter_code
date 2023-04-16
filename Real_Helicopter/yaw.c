@@ -18,7 +18,6 @@
 #include "utils/ustdlib.h"
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
-#include "initialisation.h"
 #include "display.h"
 #include "ADC.h"
 #include "buttons4.h"
@@ -32,9 +31,6 @@ void yaw_ISR(void) {
 
     GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0);
     GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_1);
-
-
-
 
 }
 

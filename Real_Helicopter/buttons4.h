@@ -71,4 +71,6 @@ updateButtons (void);
 uint8_t
 checkButton (uint8_t butName);
 
+bool button_event(uint8_t butNum);
+
 #endif /*BUTTONS_H_*/

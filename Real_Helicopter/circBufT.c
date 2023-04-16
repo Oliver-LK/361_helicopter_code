@@ -16,6 +16,16 @@
 
    // Note use of calloc() to clear contents.
 
+uint32_t * initCircBuf (circBuf_t *buffer, uint32_t size)
+{
+    buffer->windex = 0;
+    buffer->rindex = 0;
+    buffer->size = size;
+    buffer->data = (uint32_t *) calloc (size, sizeof(uint32_t));
+    return buffer->data;
+
+}
+
 // *******************************************************
 // writeCircBuf: insert entry at the current windex location,
 // advance windex, modulo (buffer size).

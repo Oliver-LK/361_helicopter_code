@@ -20,7 +20,6 @@
 #include "utils/ustdlib.h"
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
-#include "initialisation.h"
 #include "display.h"
 #include "ADC.h"
 #include "buttons4.h"

@@ -23,9 +23,14 @@
 #include "utils/ustdlib.h"
 #include "circBufT.h"
 #include "OrbitOLED/OrbitOLEDInterface.h"
-#include "initialisation.h"
 #include "display.h"
 #include "ADC.h"
+
+void initDisplay (void)
+{
+    // intialise the Orbit OLED display
+    OLEDInitialise ();
+}
 
 
 // Didsplays the ,maen value o n the tiva dispay

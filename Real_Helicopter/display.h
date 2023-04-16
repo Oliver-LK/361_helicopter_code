@@ -33,6 +33,8 @@ typedef enum {  percentageState = 0,
 
 displayState_t displaystate;
 
+void initDisplay (void);
+
 // Function Declarations
 void displayMeanVal(uint16_t meanVal, uint32_t count);
 

@@ -82,6 +82,8 @@ initButtons (void)
 	}
 }
 
+
+
 // *******************************************************
 // updateButtons: Function designed to be called regularly. It polls all
 // buttons once and updates variables associated with the buttons if
@@ -137,4 +139,16 @@ checkButton (uint8_t butName)
 	}
 	return NO_CHANGE;
 }
+
+// Detects a if a button is pushed and returns a bool
+bool button_event(uint8_t butNum)
+{
+    updateButtons ();
+    if(checkButton (butNum) == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 

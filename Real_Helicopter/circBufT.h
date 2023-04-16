@@ -22,6 +22,8 @@ typedef struct {
 	uint32_t *data;		// pointer to the data
 } circBuf_t;
 
+uint32_t * initCircBuf (circBuf_t *buffer, uint32_t size);
+
 // *******************************************************
 // initCircBuf: Initialise the circBuf instance. Reset both indices to
 // the start of the buffer.  Dynamically allocate and clear the the 

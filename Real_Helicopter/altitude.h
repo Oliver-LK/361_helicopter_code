@@ -1,18 +1,20 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
-// CREATE DATE   : 7/3/2023
-// PURPOSE       : ADC handler 
-//                 
+// CREATE DATE   : 17/4/2023
+// PURPOSE       : Altitude module
+//
 // **********************************************************
 
 
 #ifndef ADC_H
 #define ADC_H
-// Libraries
+
+// Libaries
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
-// Modules and Drivers
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"
@@ -24,21 +26,19 @@
 #include "driverlib/debug.h"
 #include "utils/ustdlib.h"
 #include "circBufT.h"
-#include "OrbitOLED/OrbitOLEDInterface.h"
+#include "ADC.h"
+#include "buttons4.h"
 
-// Global Constants
-#define BUF_SIZE 16
-#define SAMPLE_RATE_HZ 100
 
-// Global Variables
-circBuf_t g_inBuffer;       // Buffer of size BUF_SIZE integers (sample values)
-uint32_t g_ulSampCnt;       // Counter for the interrupts
 
-// Function declarations
-void SysTickIntHandler(void);
 
-void ADCIntHandler(void);
 
-void initADC (void);
+
+
+int32_t give_adc_av(void);
+
+int32_t give_adc_percent(unit32_t adc_av, uint32_t ADC_OFFSET);
+
+int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
 
 #endif
