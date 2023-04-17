@@ -51,5 +51,18 @@ void yaw_ISR(void)
 
 int32_t get_yaw(void)
 {
-    return rotation_times;
+    uint8_t ticks = 0;
+
+    // Scuffed
+    if(prevoius_val == 0) {
+        ticks = 0;
+    } else if(prevoius_val == 1) {
+        ticks = 1;
+    } else if(prevoius_val == 3) {
+        ticks = 2;
+    } else if(prevoius_val == 2) {
+        ticks = 3;
+    }
+
+    return (rotation_times);
 }
