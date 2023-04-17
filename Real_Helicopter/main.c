@@ -85,8 +85,6 @@ void do_init(void)
 
 
 
-
-
 int main(void) {
 
     uint16_t i;
