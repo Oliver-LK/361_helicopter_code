@@ -36,7 +36,7 @@ displayState_t displaystate;
 void initDisplay (void);
 
 // Function Declarations
-void displayMeanVal(uint16_t meanVal, float count);
+void displayMeanVal(uint16_t meanVal, int16_t count, int8_t decimal);
 
 void displayPercentage(int16_t percentage);
 

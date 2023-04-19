@@ -93,13 +93,17 @@ int32_t get_yaw(void)
     } else if (rotation_times < 0 ){
         rotation_times += 448;
     }
-    int16_t rotation = ((rotation_times)*360/448);
+    int16_t rotation = ((rotation_times)*360/448) - 180;
     return rotation;
 }
 
-int32_t calculate_yaw(void)
+uint8_t yaw_decimal(void)
 {
-    int16_t rotation = ((rotation_times)*360/448);
-    int16_t remainder = (rotation_times*10/448 + 5)/10
 
+    uint8_t decimal = 0;
+    decimal = (rotation_times * 36000 / 448) % 100;
+    if (decimal >= 10) {
+        decimal /= 10;
+    }
+    return decimal;
 }

@@ -131,7 +131,7 @@ int main(void) {
                 break;
 
             case(meanState):
-                displayMeanVal(adc_av, get_yaw());  // remove get_yaw()
+                displayMeanVal(adc_av, get_yaw(), yaw_decimal());  // remove get_yaw()
                 break;
 
             case(blankState):

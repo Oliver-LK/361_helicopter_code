@@ -28,4 +28,6 @@ void yaw_ISR(void);
 
 int32_t get_yaw(void);
 
+uint8_t yaw_decimal(void);
+
 #endif
