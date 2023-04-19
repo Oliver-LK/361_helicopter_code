@@ -83,13 +83,23 @@ void yaw_ISR(void)
 }
 
 
+
+
 int32_t get_yaw(void)
 {
     if(rotation_times > 448) {
 
-        rotation_times = 0;
+        rotation_times -= 448;
     } else if (rotation_times < 0 ){
-        rotation_times = 448;
+        rotation_times += 448;
     }
-    return (rotation_times*360/448 - 180);
+    int16_t rotation = ((rotation_times)*360/448);
+    return rotation;
+}
+
+int32_t calculate_yaw(void)
+{
+    int16_t rotation = ((rotation_times)*360/448);
+    int16_t remainder = (rotation_times*10/448 + 5)/10
+
 }

@@ -34,7 +34,7 @@ void initDisplay (void)
 
 
 // Didsplays the ,maen value o n the tiva dispay
-void displayMeanVal(uint16_t meanVal, uint32_t count)
+void displayMeanVal(uint16_t meanVal, float count)
 {
     char string[17];  // 16 characters across the display
 
@@ -46,7 +46,7 @@ void displayMeanVal(uint16_t meanVal, uint32_t count)
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
-    usnprintf (string, sizeof(string), "Sample # %5d", count);
+    usnprintf (string, sizeof(string), "Sample # %5.2f", count);
     OLEDStringDraw (string, 0, 3);
 }
 
