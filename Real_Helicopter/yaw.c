@@ -1,7 +1,7 @@
 
 
 
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -25,44 +25,71 @@
 
 
 static uint8_t prevoius_val = 0;
-static int16_t rotation_times = 0;
+static int16_t rotation_times = 448/2;
 
-static uint8_t encoder_0 = 0;
-static uint8_t encoder_1 = 0;
 
 void yaw_ISR(void)
 {
-    encoder_0 = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0);
-    encoder_1 = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_1);
+    uint8_t encoder_0  = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0);
+    uint8_t encoder_1 = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_1);
+    uint8_t state = encoder_0 + encoder_1;
 
-    if(prevoius_val == 3 && encoder_0 == 0) {
-        rotation_times++;
-    } else if (prevoius_val == 0 && encoder_1 == 2) {
-        rotation_times--;
+
+    switch(state)
+    {
+        case 0:
+            if(prevoius_val == 2) {
+                rotation_times++;
+            } else {
+                rotation_times--;
+            }
+
+             break;
+        case 1:
+                if(prevoius_val == 0) {
+                    rotation_times++;
+                }
+                else {
+                    rotation_times--;
+                }
+
+                 break;
+        case 3:
+                if(prevoius_val == 1) {
+                    rotation_times++;
+                }
+                else {
+                    rotation_times--;
+                }
+
+                 break;
+        case 2:
+                if(prevoius_val == 3) {
+                    rotation_times++;
+                }
+                else {
+                    rotation_times--;
+                }
+
+                 break;
+
+
     }
 
-    prevoius_val = encoder_1 + encoder_0;
+    prevoius_val = state;
 
-    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0);
-    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_1);
+    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
 
 }
 
 
 int32_t get_yaw(void)
 {
-    uint8_t ticks = 0;
+    if(rotation_times > 448) {
 
-    // Scuffed
-    if(prevoius_val == 0) {
-        ticks = 0;
-    } else if(prevoius_val == 1) {
-        ticks = 1;
-    } else if(prevoius_val == 3) {
-        ticks = 2;
-    } else if(prevoius_val == 2) {
-        ticks = 3;
+        rotation_times = 0;
+    } else if (rotation_times < 0 ){
+        rotation_times = 448;
     }
-
-    return (rotation_times);
+    return (rotation_times*360/448 - 180);
 }
