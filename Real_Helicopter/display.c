@@ -6,7 +6,7 @@
 //                 
 // ***********************************************************
 
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -34,7 +34,7 @@ void initDisplay (void)
 
 
 // Displays the helicopter positional information on the tiva dispay
-void displayPos(int32_t percentage, int16_t count, int8_t decimal)
+void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal)
 {
     char string[17];  // 16 characters across the display
 
@@ -42,17 +42,19 @@ void displayPos(int32_t percentage, int16_t count, int8_t decimal)
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Alt %4d", percentage);
+    usnprintf (string, sizeof(string), "Alt %4d", alt_percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
-    usnprintf (string, sizeof(string), "Yaw(deg) %5d.%d", count, decimal);
-    OLEDStringDraw (string, 0, 3);
+    usnprintf (string, sizeof(string), "Yaw(deg) %5d.%d", yaw_int, yaw_decimal);
+    OLEDStringDraw (string, 0, 3); //Places the line on the 3rd line of the module.
 }
 
 
-// dipslays the percenage
-void displayPercentage(int16_t percentage)
+
+//Redundant code
+// displays the percentage
+/*void displayPercentage(int16_t percentage)
 {
     char string[17];  // 16 characters across the display
 
@@ -60,7 +62,7 @@ void displayPercentage(int16_t percentage)
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Percent+ = %4d", percentage); //g_yaw_sum should be percentage.
+    usnprintf (string, sizeof(string), "Percent+ = %4d", percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
@@ -81,7 +83,7 @@ void displayBlank(void)
 
 
 // changes the enum of the display amd updates it
-/*void display_change(void)
+void display_change(void)
 {
     displayBlank();
 
