@@ -8,7 +8,7 @@
 #ifndef YAW_H
 #define YAW_H
 
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -30,9 +30,12 @@
 #include "buttons4.h"
 
 void yaw_ISR(void);
+//ISR to increment/decrement yaw_counter which keeps track of the rotation of the helicopter.
 
 int32_t get_yaw(void);
+//Returns the yaw (in degree form) of the helicopter for displaying the yaw. This avoids global variable use.
 
 uint8_t yaw_decimal(void);
+//Calculates the decimal part of the yaw position.
 
 #endif

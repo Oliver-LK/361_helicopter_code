@@ -8,7 +8,7 @@
 
 #ifndef DISPLAY_H
 #define DISPLAY_H
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 

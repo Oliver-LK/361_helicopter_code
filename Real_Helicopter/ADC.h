@@ -28,17 +28,21 @@
 
 // Global Constants
 #define BUF_SIZE 16
-#define SAMPLE_RATE_HZ 100
+#define SAMPLE_RATE_HZ 100 //Sets the sample rate of the ADC to 100 Hz by triggering a sampling interrupt at 100Hz.
 
 // Global Variables
 circBuf_t g_inBuffer;       // Buffer of size BUF_SIZE integers (sample values)
-uint32_t g_ulSampCnt;       // Counter for the interrupts
+
+//uint32_t g_ulSampCnt;       // Counter for the interrupts
 
 // Function declarations
 void SysTickIntHandler(void);
+//Generates an interrupt at SAMPLE_RATE_HZ frequency which tells the ADC to sample the altitude of the helicopter.
 
 void ADCIntHandler(void);
+//Tells the ADC to take a sample when triggered by SysTickIntHandler.
 
 void initADC (void);
+//Function to initialise ADC's ports for the altitude measuring.
 
 #endif

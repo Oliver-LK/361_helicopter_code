@@ -100,7 +100,7 @@ int main(void) {
 
     for (i = 0; i < BUF_SIZE; i++)
                 sum = sum + readCircBuf (&g_inBuffer);
-    uint16_t ADC_offset = give_adc_offset(); //Sets ADC offset.
+    uint16_t ADC_offset = give_adc_av(); //Sets ADC offset.
 
 
     while (1)

@@ -29,12 +29,16 @@
 #include "ADC.h"
 #include "buttons4.h"
 
-uint16_t give_adc_offset(void);
 
-int32_t give_adc_av(void);
+
+
 
 int32_t give_adc_percent(int32_t adc_av, uint32_t ADC_OFFSET);
 
 int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
+
+int32_t give_adc_av(void);
+
+//uint16_t give_adc_offset(void);
 
 #endif

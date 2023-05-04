@@ -27,53 +27,57 @@
 #include "ADC.h"
 #include "buttons4.h"
 #include "yaw.h"
+#define TICKS_PER_ROTATION 448
+#define DEG_PER_ROTATION 360
+#define PRECISION 100
+#define MAX_ROTATION_THRESHOLD 448/2
+#define MIN_ROTATION_THRESHOLD (-448/2 + 1)
 
 
-static uint8_t prevoius_val = 0;
-static int16_t rotation_times = 0;
+static uint8_t prev_yaw_state = 0; //static variable to represent the previous state of the encoder
+static int16_t yaw_counter = 0; //
 
 
 void yaw_ISR(void)
 {
-    uint8_t encoder_0  = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0);
-    uint8_t encoder_1 = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_1);
-    uint8_t state = encoder_0 + encoder_1;
-
+    uint8_t state = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Reads the state of the two encoders.
 
     switch(state)
+    //Switch statement to decide whether the yaw angle is increasing. For clockwise rotation, the encoder states go:
+    // {00,01,11,10}, and for anticlockwise rotation, the states go {00,10,11,01}
     {
-        case 0:
-            if(prevoius_val == 2) {
-                rotation_times++;
+        case 0b00:
+            if(prev_yaw_state == 0b10) {
+                yaw_counter++;
             } else {
-                rotation_times--;
+                yaw_counter--;
             }
 
              break;
-        case 1:
-                if(prevoius_val == 0) {
-                    rotation_times++;
+        case 0b01:
+                if(prev_yaw_state == 0b00) {
+                    yaw_counter++;
                 }
                 else {
-                    rotation_times--;
+                    yaw_counter--;
                 }
 
                  break;
-        case 3:
-                if(prevoius_val == 1) {
-                    rotation_times++;
+        case 0b11:
+                if(prev_yaw_state == 0b01) {
+                    yaw_counter++;
                 }
                 else {
-                    rotation_times--;
+                    yaw_counter--;
                 }
 
                  break;
-        case 2:
-                if(prevoius_val == 3) {
-                    rotation_times++;
+        case 0b10:
+                if(prev_yaw_state == 0b11) {
+                    yaw_counter++;
                 }
                 else {
-                    rotation_times--;
+                    yaw_counter--;
                 }
 
                  break;
@@ -81,9 +85,9 @@ void yaw_ISR(void)
 
     }
 
-    prevoius_val = state;
+    prev_yaw_state = state;
 
-    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
+    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Clears the interrupt so the uC can return to its regularly scheduled program.
 
 }
 
@@ -92,13 +96,14 @@ void yaw_ISR(void)
 
 int32_t get_yaw(void)
 {
-    if(rotation_times > 224) {
+    //Calculates the yaw of the
+    if(yaw_counter > MAX_ROTATION_THRESHOLD) {
 
-        rotation_times -= 448;
-    } else if (rotation_times < -223 ){
-        rotation_times += 448;
+        yaw_counter -= TICKS_PER_ROTATION;
+    } else if (yaw_counter < MIN_ROTATION_THRESHOLD){
+        yaw_counter += TICKS_PER_ROTATION;
     }
-    int16_t rotation = ((rotation_times) * 360/448);
+    int16_t rotation = ((yaw_counter * DEG_PER_ROTATION)/TICKS_PER_ROTATION);
     return rotation;
 }
 
@@ -106,7 +111,7 @@ uint8_t yaw_decimal(void)
 {
 
     uint8_t decimal = 0;
-    decimal = (rotation_times * 36000 / 448) % 100;
+    decimal = ((yaw_counter * DEG_PER_ROTATION * PRECISION) / TICKS_PER_ROTATION) % PRECISION;
     if (decimal >= 10) {
         decimal /= 10;
     }
