@@ -49,18 +49,21 @@ int32_t give_adc_av(void)
     return adc_av;
 }
 
+/*
 int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset)
 {
 
-    int32_t percentage = ((  ADC_offset - adc_av )*100/ADC_range);
+    int32_t percentage = ((ADC_offset - adc_av )*100/ADC_range);
 
     return percentage;
 
 }
+*/
 
 int32_t give_adc_percent(int32_t adc_av, uint32_t ADC_offset)
 {
-    int32_t percentage = percentage_calc(adc_av, ADC_offset);
+    // Calculates the height of the helicopter as a percentage.
+    int32_t percentage = ((ADC_offset - adc_av )*100/ADC_range);
     return percentage;
 }
 

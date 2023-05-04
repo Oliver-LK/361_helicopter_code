@@ -9,7 +9,7 @@
 #ifndef ALTITUDE_H
 #define ALTITUDE_H
 
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -34,11 +34,14 @@
 
 
 int32_t give_adc_percent(int32_t adc_av, uint32_t ADC_OFFSET);
+//Returns calculates and returns altitude percentage, avoiding the use of global variables.
 
-int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
+
+
 
 int32_t give_adc_av(void);
 
 //uint16_t give_adc_offset(void);
+//int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
 
 #endif

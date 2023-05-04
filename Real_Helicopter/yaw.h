@@ -35,7 +35,7 @@ void yaw_ISR(void);
 int32_t get_yaw(void);
 //Returns the yaw (in degree form) of the helicopter for displaying the yaw. This avoids global variable use.
 
-uint8_t yaw_decimal(void);
+int8_t yaw_decimal(void);
 //Calculates the decimal part of the yaw position.
 
 #endif

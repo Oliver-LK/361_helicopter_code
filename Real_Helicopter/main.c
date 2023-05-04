@@ -5,7 +5,7 @@
 //                 
 // ***********************************************************
 
-// Libaries
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -107,7 +107,7 @@ int main(void) {
     {
         // Calculate and display the rounded mean of the buffer contents
         int32_t adc_av =  give_adc_av();
-        int32_t percentage = give_adc_percent(adc_av, ADC_offset);
+        int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
 
 
@@ -116,7 +116,7 @@ int main(void) {
             ADC_offset = adc_av; // Sets the new zero-point for the altitude.
         }
 
-        displayPos(percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+        displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
 
         //Redundant Code
