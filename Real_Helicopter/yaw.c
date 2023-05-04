@@ -117,3 +117,9 @@ int8_t yaw_decimal(void)
     }
     return abs(decimal);
 }
+
+
+int32_t get_yaw_counter(void) {
+
+    return yaw_counter;
+}

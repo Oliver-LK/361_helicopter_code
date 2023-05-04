@@ -38,4 +38,7 @@ int32_t get_yaw(void);
 int8_t yaw_decimal(void);
 //Calculates the decimal part of the yaw position.
 
+int32_t get_yaw_counter(void);
+//returns the yaw counter variable.
+
 #endif

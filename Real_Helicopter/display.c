@@ -42,12 +42,15 @@ void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal)
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Alt %4d", alt_percentage);
+    usnprintf (string, sizeof(string), "Alt(%%) %8d", alt_percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
     usnprintf (string, sizeof(string), "Yaw(deg) %5d.%d", yaw_int, yaw_decimal);
+
+
     OLEDStringDraw (string, 0, 3); //Places the line on the 3rd line of the module.
+
 }
 
 
