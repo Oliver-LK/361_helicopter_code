@@ -31,12 +31,12 @@ typedef enum {  percentageState = 0,
                 blankState = 2
 } displayState_t;
 
-displayState_t displaystate;
+//displayState_t displaystate = 0;
 
 void initDisplay (void);
 
 // Function Declarations
-void displayMeanVal(uint16_t meanVal, int16_t count, int8_t decimal);
+void displayPos(int32_t percentage, int16_t count, int8_t decimal);
 
 void displayPercentage(int16_t percentage);
 

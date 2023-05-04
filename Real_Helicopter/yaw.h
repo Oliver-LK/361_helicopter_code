@@ -1,4 +1,9 @@
-
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements
+// CREATE DATE   : 04/05/2023
+// PURPOSE       : Yaw Module
+//
+// ***********************************************************
 
 #ifndef YAW_H
 #define YAW_H

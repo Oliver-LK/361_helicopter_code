@@ -51,22 +51,21 @@ void initClock (void)
 
 
 // *******************************************************
-// initCircBuf: Initialise the circBuf instance. Reset both indices to
-// the start of the buffer.  Dynamically allocate and clear the the
-// memory and return a pointer for the data.  Return NULL if
-// allocation fails.
+
 
 
 
 void do_init(void)
 {
+    //Initialisation function to tidy up the start of the program.
     initClock ();
     initADC ();
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     initButtons ();
 
-    //  Interupt Pins init
+    //  Interrupt Pins initialisation for yaw monitoring.
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
     GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
@@ -87,24 +86,21 @@ void do_init(void)
 
 int main(void) {
 
+    int32_t sum = 0; // Sum variable for reading circular buffer.
     uint16_t i;
-    int32_t sum = 0;
-
-    // Calls initlisation function
+    // Calls initialisation function
     do_init();
 
     // Enable interrupts to the processor.
     IntMasterEnable();
 
-    // in this order
 
-    // set init alt value to meanVal
 
-    SysCtlDelay (3000000);
+    SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
     for (i = 0; i < BUF_SIZE; i++)
                 sum = sum + readCircBuf (&g_inBuffer);
-    uint16_t ADC_offset = give_adc_offset();
+    uint16_t ADC_offset = give_adc_offset(); //Sets ADC offset.
 
 
     while (1)
@@ -114,31 +110,37 @@ int main(void) {
         int32_t percentage = give_adc_percent(adc_av, ADC_offset);
 
 
-//        displayMeanVal (adc_av, g_ulSampCnt);
-        if(button_event(UP) == PUSHED) {
-            display_change();
-        }
+
 
         if(button_event(LEFT) == PUSHED) {
-            ADC_offset = adc_av;
+            ADC_offset = adc_av; // Sets the new zero-point for the altitude.
         }
 
+        displayPos(percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
-        switch(displaystate)
+
+        //Redundant Code
+/*        switch(displaystate)
         {
             case(percentageState):
                 displayPercentage(percentage);
                 break;
 
             case(meanState):
-                displayMeanVal(adc_av, get_yaw(), yaw_decimal());  // remove get_yaw()
+                displayMeanVal(displayPercentage(percentage), yaw_decimal());
                 break;
 
             case(blankState):
                 displayBlank();
                 break;
 
-        }
+        }*/
+        //        displayMeanVal (adc_av, g_ulSampCnt);
+        /*
+                if(button_event(UP) == PUSHED) {
+                    display_change();
+                }
+        */
 
     }
 

@@ -33,25 +33,25 @@ void initDisplay (void)
 }
 
 
-// Didsplays the ,maen value o n the tiva dispay
-void displayMeanVal(uint16_t meanVal, int16_t count, int8_t decimal)
+// Displays the helicopter positional information on the tiva dispay
+void displayPos(int32_t percentage, int16_t count, int8_t decimal)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("ADC Display", 0, 0);
+    OLEDStringDraw ("Heli Position", 0, 0);
 
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Mean ADC = %4d", meanVal);
+    usnprintf (string, sizeof(string), "Alt %4d", percentage);
     // Update line on display.
     OLEDStringDraw (string, 0, 1);
 
-    usnprintf (string, sizeof(string), "Sample # %5d.%d", count, decimal);
+    usnprintf (string, sizeof(string), "Yaw(deg) %5d.%d", count, decimal);
     OLEDStringDraw (string, 0, 3);
 }
 
 
-// dipslay s the percenage
+// dipslays the percenage
 void displayPercentage(int16_t percentage)
 {
     char string[17];  // 16 characters across the display
@@ -81,7 +81,7 @@ void displayBlank(void)
 
 
 // changes the enum of the display amd updates it
-void display_change(void)
+/*void display_change(void)
 {
     displayBlank();
 
@@ -94,4 +94,4 @@ void display_change(void)
 
 
 
-}
+}*/

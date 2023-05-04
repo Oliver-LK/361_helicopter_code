@@ -1,4 +1,9 @@
-
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements
+// CREATE DATE   : 04/05/2023
+// PURPOSE       : Yaw Module
+//
+// ***********************************************************
 
 
 // Libraries
@@ -25,7 +30,7 @@
 
 
 static uint8_t prevoius_val = 0;
-static int16_t rotation_times = 448/2;
+static int16_t rotation_times = 0;
 
 
 void yaw_ISR(void)
@@ -87,13 +92,13 @@ void yaw_ISR(void)
 
 int32_t get_yaw(void)
 {
-    if(rotation_times > 448) {
+    if(rotation_times > 224) {
 
         rotation_times -= 448;
-    } else if (rotation_times < 0 ){
+    } else if (rotation_times < -223 ){
         rotation_times += 448;
     }
-    int16_t rotation = ((rotation_times)*360/448) - 180;
+    int16_t rotation = ((rotation_times) * 360/448);
     return rotation;
 }
 
