@@ -87,7 +87,7 @@ void yaw_ISR(void)
 
     prev_yaw_state = state;
 
-    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Clears the interrupt so the micro can return to its regularly scheduled program.
+    GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Clears the interrupt so the micro can return to its regularly scheduled program.    :)
 
 }
 
@@ -123,3 +123,5 @@ int32_t get_yaw_counter(void) {
 
     return yaw_counter;
 }
+
+
