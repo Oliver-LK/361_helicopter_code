@@ -53,8 +53,37 @@ void initClock (void)
 
 // *******************************************************
 
+void init_abs_yaw_ISR(void) {
+
+    //Interrupt for setting reference position to 0.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4)
+
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+
+    GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
+
+    GPIOIntEnable(GPIO_PORTC_BASE,GPIO_INT_PIN_4)
+
+}
 
 
+void init_yaw_ISR(void)
+{
+    //  Interrupt Pins initialisation for yaw monitoring.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    //    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+    //                   GPIO_DIR_MODE_IN);
+
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+                   GPIO_BOTH_EDGES);
+
+    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
+    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
+}
 
 void do_init(void)
 {
@@ -64,21 +93,12 @@ void do_init(void)
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     initButtons ();
+    init_yaw_ISR();
+    init_abs_yaw_ISR();
 
-    //  Interrupt Pins initialisation for yaw monitoring.
 
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
-    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-//    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
-//                   GPIO_DIR_MODE_IN);
 
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
-                   GPIO_BOTH_EDGES);
-
-    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
-
-    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
 }
 
 //#############################################  END OF INIT ########################################

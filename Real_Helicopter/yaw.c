@@ -70,7 +70,6 @@ void yaw_ISR(void)
                 }
                 else {
                     yaw_counter--;
-                }
 
                  break;
         case 0b10:
