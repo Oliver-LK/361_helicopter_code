@@ -41,4 +41,5 @@ int8_t yaw_decimal(void);
 int32_t get_yaw_counter(void);
 //returns the yaw counter variable.
 
+void abs_yaw_ISR(void);
 #endif

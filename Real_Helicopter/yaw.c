@@ -27,6 +27,8 @@
 #include "ADC.h"
 #include "buttons4.h"
 #include "yaw.h"
+#include "State.h"
+
 #define TICKS_PER_REV 448
 #define DEG_PER_REV 360
 #define PRECISION 100
@@ -37,7 +39,12 @@
 static uint8_t prev_yaw_state = 0; //static variable to represent the previous state of the encoder
 static int32_t yaw_counter = 0; //
 
+void abs_yaw_ISR(void) {
 
+    if(get_heli_state() == TAKEOFF) {
+        yaw_counter = 0;
+    }
+}
 
 void yaw_ISR(void)
 {

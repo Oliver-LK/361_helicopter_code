@@ -8,15 +8,6 @@
 #define 10_PERCENT_CHANGE 121 //10% of the voltage range from 0% altitude to 100% altitude.
 
 
-static heli_state current_heli_state = LANDED;
-
-
-void abs_yaw_ISR(void) {
-
-    if(current_heli_state == TAKEOFF) {
-        yaw_counter = 0;
-    }
-}
 
 
 

@@ -1,3 +1,7 @@
+#ifndef STATE_H
+#define STATE_H
+
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -35,4 +39,5 @@ error_t set_desired_pos(error_t desired_pos, heli_state current_heli_state);
 
 heli_state get_heli_state(void);
 
-void abs_yaw_ISR(void);
+
+#endif
