@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
 #include "State.h"
 
 #define ALT_MIN 2358 //95%  of the maximum voltage, which is 5% above 0 altitude.
@@ -9,27 +8,16 @@
 #define 10_PERCENT_CHANGE 121 //10% of the voltage range from 0% altitude to 100% altitude.
 
 
-typedef enum {
-
-    LANDED,
-    TAKEOFF,
-    FLYING
-
-} heli_state;
-
-typedef struct {
-    int32_t alt_desired;
-    int16_t yaw_desired;
-
-} error_t;
-
-typedef struct {
-
-    bool motors_on = 0;
-    bool is_calibrated = 0;
+static heli_state current_heli_state = LANDED;
 
 
-} task_t;
+void abs_yaw_ISR(void) {
+
+    if(current_heli_state == TAKEOFF) {
+        yaw_counter = 0;
+    }
+}
+
 
 
 heli_state change_state(heli_state current_heli_state, task_t tasks) {
@@ -79,9 +67,9 @@ error_t set_desired_pos(error_t desired_pos, heli_state current_heli_state) {
                 desired_pos->alt_desired = ALT_MIN;
             }
         } else if (button_event(LEFT) == PUSHED) {
-           yaw_incr++;
-       } else if (button_event(LEFT) == PUSHED) {
-           yaw_incr--;
+           yaw_incr--;  //Anticlockwise is negative.
+       } else if (button_event(RIGHT) == PUSHED) {
+           yaw_incr++; //Clockwise is negative.
        }
        desired_pos->yaw_desired = (yaw_incr * 15*448)/360; //Calculates the desired yaw.
        break;
@@ -89,4 +77,9 @@ error_t set_desired_pos(error_t desired_pos, heli_state current_heli_state) {
 
 
     return desired_pos;
+}
+
+heli_state get_heli_state(void) {
+
+    return current_heli_state;
 }

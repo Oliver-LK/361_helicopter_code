@@ -35,7 +35,8 @@
 
 
 static uint8_t prev_yaw_state = 0; //static variable to represent the previous state of the encoder
-static int16_t yaw_counter = 0; //
+static int32_t yaw_counter = 0; //
+
 
 
 void yaw_ISR(void)
@@ -111,10 +112,8 @@ int8_t yaw_decimal(void)
 {
     //Finds the decimal component of the yaw.
     int8_t decimal = 0;
-    decimal = ((yaw_counter * DEG_PER_REV * PRECISION) / TICKS_PER_REV) % PRECISION;
-    if (decimal >= 10) {
-        decimal /= 10;
-    }
+    decimal = ((yaw_counter * DEG_PER_REV * PRECISION) / TICKS_PER_REV) % PRECISION + 5;
+    decimal /= 10;
     return abs(decimal);
 }
 
