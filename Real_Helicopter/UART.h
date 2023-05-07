@@ -1,3 +1,14 @@
+
+//********************************************************
+//
+// UART.h - derived from uartDemo.c by Prof. Phil Bones.
+//
+//
+//
+// Author:  P.J. Bones  UCECE
+// Last modified:   16.4.2018
+//
+
 #ifndef UART_H
 #define UART_H
 #include <stdint.h>

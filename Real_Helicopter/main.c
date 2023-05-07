@@ -139,6 +139,8 @@ int main(void) {
         }
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+        usprintf (statusStr, "yaw = %2d.%2d | \r\n", get_yaw(), yaw_decimal()); // * usprintf
+        UARTSend (statusStr);
 
 
         //Redundant Code

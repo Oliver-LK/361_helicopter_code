@@ -1,8 +1,8 @@
 //********************************************************
 //
-// uartDemo.c - Example code for ENCE361
+// UART.c - derived from uartDemo.c by Prof. Phil Bones.
 //
-// Link with modules:  buttons2, OrbitOLEDInterface
+//
 //
 // Author:  P.J. Bones  UCECE
 // Last modified:   16.4.2018
@@ -39,12 +39,6 @@
 #define UART_USB_GPIO_PIN_RX    GPIO_PIN_0
 #define UART_USB_GPIO_PIN_TX    GPIO_PIN_1
 #define UART_USB_GPIO_PINS      UART_USB_GPIO_PIN_RX | UART_USB_GPIO_PIN_TX
-
-//********************************************************
-// Prototypes
-//********************************************************
-
-
 
 
 //********************************************************
@@ -92,8 +86,4 @@ UARTSend (char *pucBuffer)
         pucBuffer++;
     }
 }
-
-//********************************************************
-// Function to display a status message on the OLED
-//********************************************************
 
