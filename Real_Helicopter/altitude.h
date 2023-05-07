@@ -37,8 +37,6 @@ int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset);
 //Returns calculates and returns altitude percentage, avoiding the use of global variables.
 
 
-
-
 int32_t give_adc_av(void);
 
 //uint16_t give_adc_offset(void);

@@ -32,8 +32,8 @@
 #define TICKS_PER_REV 448
 #define DEG_PER_REV 360
 #define PRECISION 100
-#define MAX_REV_THRESHOLD 448/2
-#define MIN_REV_THRESHOLD (-448/2 + 1)
+#define MAX_REV_THRESHOLD TICKS_PER_REV/2
+#define MIN_REV_THRESHOLD (-TICKS_PER_REV/2 + 1)
 
 
 static uint8_t prev_yaw_state = 0; //static variable to represent the previous state of the encoder

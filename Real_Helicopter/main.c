@@ -31,6 +31,7 @@
 #include "State.h"
 #include "UART.h"
 
+#define sys_delay 3000000
 
 
 void initClock (void)
@@ -118,8 +119,9 @@ int main(void) {
 
 
 
-    SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
+    SysCtlDelay (sys_delay); //Delays the system to allow the circular buffer to fill up.
 
+    //This should probably be somewhere else.
     for (i = 0; i < BUF_SIZE; i++)
                 sum = sum + readCircBuf (&g_inBuffer);
     uint16_t ADC_offset = give_adc_av(); //Sets ADC offset.
@@ -130,15 +132,9 @@ int main(void) {
         // Calculate and display the rounded mean of the buffer contents
         int32_t adc_av =  give_adc_av();
         int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
-
-
-
-
-        if(button_event(LEFT) == PUSHED) {
-            ADC_offset = adc_av; // Sets the new zero-point for the altitude.
-        }
-
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+
+        //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
         usprintf (statusStr, "yaw = %2d.%2d | \r\n", get_yaw(), yaw_decimal()); // * usprintf
         UARTSend (statusStr);
 
@@ -165,6 +161,10 @@ int main(void) {
                     display_change();
                 }
         */
+
+        /*if(button_event(LEFT) == PUSHED) {
+                    ADC_offset = adc_av; // Sets the new zero-point for the altitude.
+                }*/
 
     }
 

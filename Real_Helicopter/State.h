@@ -34,10 +34,10 @@ heli_state change_state(heli_state current_heli_state, task_t tasks);
 
 
 error_t set_desired_pos(error_t desired_pos, heli_state current_heli_state);
-//
+//Reads the buttons and alters the desired position for the helicopter. Maybe should be elsewhere.
 
 
 heli_state get_heli_state(void);
-
+//returns the heli_state to avoid the use of global variables.
 
 #endif

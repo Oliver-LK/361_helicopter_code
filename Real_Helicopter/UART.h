@@ -28,6 +28,9 @@
 
 
 void initialiseUSB_UART (void);
+//Initialises the UART modules per the #defines.
+
 void UARTSend (char *pucBuffer);
+//Sends a message over UART to the host computer.
 
 #endif
