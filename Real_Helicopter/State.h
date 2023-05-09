@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "buttons4.h"
+
+
 
 typedef enum {
 
@@ -12,7 +15,7 @@ typedef enum {
     TAKEOFF,
     FLYING
 
-} heli_state;
+} heli_state_t;
 
 typedef struct {
     int32_t alt_desired;
@@ -22,22 +25,22 @@ typedef struct {
 
 typedef struct {
 
-    bool motors_on = 0;
-    bool is_calibrated = 0;
+    bool motors_on;
+    bool is_calibrated;
 
 
 } task_t;
 
-heli_state change_state(heli_state current_heli_state, task_t tasks);
+heli_state_t change_state(heli_state_t current_heli_state, task_t* tasks);
 // Changes the helicopter's states using an FSM.
 
 
 
-error_t set_desired_pos(error_t desired_pos, heli_state current_heli_state);
+error_t* set_desired_pos(error_t* desired_pos, heli_state_t current_heli_state);
 //Reads the buttons and alters the desired position for the helicopter. Maybe should be elsewhere.
 
 
-heli_state get_heli_state(void);
+heli_state_t get_heli_state(void);
 //returns the heli_state to avoid the use of global variables.
 
 #endif

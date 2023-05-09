@@ -11,10 +11,8 @@
 #include "driverlib/systick.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
-#include "buttons4.h"
 #include "utils/ustdlib.h"
 #include "stdlib.h"
-#include "OrbitOLED/OrbitOLEDInterface.h"
 
 // PWM1 configuration
 #define PWM_START_RATE_HZ  250

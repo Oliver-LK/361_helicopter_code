@@ -30,10 +30,15 @@
 #include "altitude.h"
 #include "State.h"
 #include "UART.h"
+#include "PWM.h"
+#define MAX_STR_LEN 16
+
 
 #define sys_delay 3000000
 
+uint8_t slow_tick = 0;
 
+char statusStr[MAX_STR_LEN + 1];
 void initClock (void)
 {
     // Set the clock rate to 20 MHz
@@ -60,13 +65,13 @@ void init_abs_yaw_ISR(void) {
     //Interrupt for setting reference position to 0.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 
-    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4)
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
 
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+    GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_4, GPIO_FALLING_EDGE);
 
     GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
 
-    GPIOIntEnable(GPIO_PORTC_BASE,GPIO_INT_PIN_4)
+    GPIOIntEnable(GPIO_PORTC_BASE,GPIO_INT_PIN_4);
 
 }
 
@@ -97,6 +102,7 @@ void do_init(void)
     initButtons ();
     init_yaw_ISR();
     init_abs_yaw_ISR();
+    initialisePWM ();
 
 
 
@@ -116,6 +122,8 @@ int main(void) {
 
     // Enable interrupts to the processor.
     IntMasterEnable();
+    PWMOutputState(PWM_MAIN_BASE, PWM_MAIN_OUTBIT, true);
+    PWMOutputState(PWM_TAIL_BASE, PWM_TAIL_OUTBIT, true);
 
 
 
@@ -135,8 +143,9 @@ int main(void) {
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
         //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
-        usprintf (statusStr, "yaw = %2d.%2d | \r\n", get_yaw(), yaw_decimal()); // * usprintf
+        usprintf (statusStr, "yaw| \r\n"); // * usprintf
         UARTSend (statusStr);
+
 
 
         //Redundant Code

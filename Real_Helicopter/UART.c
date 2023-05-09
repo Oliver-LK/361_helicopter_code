@@ -28,7 +28,7 @@
 // Constants
 //********************************************************
 
-#define SLOWTICK_RATE_HZ 4
+
 #define MAX_STR_LEN 16
 //---USB Serial comms: UART0, Rx:PA0 , Tx:PA1
 #define BAUD_RATE 9600

@@ -24,7 +24,7 @@
 #include "OrbitOLED/OrbitOLEDInterface.h"
 #include "ADC.h"
 #include "display.h"
-
+#define SLOWTICK_RATE_HZ 4
 
 // The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
 void SysTickIntHandler(void)
@@ -32,6 +32,7 @@ void SysTickIntHandler(void)
     // Initiate a conversion
     ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
     //g_ulSampCnt++;
+
 }
 
 
