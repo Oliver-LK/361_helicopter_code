@@ -103,6 +103,7 @@ void do_init(void)
     init_yaw_ISR();
     init_abs_yaw_ISR();
     initialisePWM ();
+    initialiseUSB_UART();
 
 
 
@@ -115,6 +116,7 @@ void do_init(void)
 
 int main(void) {
 
+    static uint32_t message_time = 0;
     int32_t sum = 0; // Sum variable for reading circular buffer.
     uint16_t i;
     // Calls initialisation function
@@ -143,10 +145,14 @@ int main(void) {
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
         //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
-        usprintf (statusStr, "yaw| \r\n"); // * usprintf
-        UARTSend (statusStr);
+        if (message_time >100000) {
+            usprintf (statusStr, "yaw| \r\n"); // * usprintf
+            UARTSend (statusStr);
+            message_time = 0;
+        }
 
 
+        message_time++;
 
         //Redundant Code
 /*        switch(displaystate)
