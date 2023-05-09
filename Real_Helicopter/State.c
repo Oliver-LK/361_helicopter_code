@@ -32,7 +32,7 @@ heli_state_t change_state(heli_state_t current_heli_state, task_t* tasks) {
 }
 
 
-error_t* set_desired_pos(error_t* desired_pos, heli_state_t current_heli_state) {
+pos_t* set_desired_pos(pos_t* desired_pos, heli_state_t current_heli_state) {
     static int8_t yaw_incr = 0; // multiplication counter to ensure the desired yaw doesn't drift off the true yaw angle after multiple yaw increases (as 15 deg * 448/360 ~ 18.67)
     switch(current_heli_state) {
 

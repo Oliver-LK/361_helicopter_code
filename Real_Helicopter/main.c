@@ -116,7 +116,7 @@ void do_init(void)
 
 int main(void) {
 
-    static uint32_t message_time = 0;
+    static uint8_t message_time = 0;
     int32_t sum = 0; // Sum variable for reading circular buffer.
     uint16_t i;
     // Calls initialisation function
@@ -145,7 +145,7 @@ int main(void) {
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
         //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
-        if (message_time >100000) {
+        if (message_time >10) {
             usprintf (statusStr, "yaw| \r\n"); // * usprintf
             UARTSend (statusStr);
             message_time = 0;
