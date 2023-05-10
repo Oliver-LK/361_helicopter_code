@@ -1,3 +1,4 @@
+/.metadata/
 tm4c123gh6pm_startup_ccs.c
 *.cmd
 targetConfigs/*
@@ -8,3 +9,6 @@ Debug/*
 .cproject
 .project
 /Debug/
+/RemoteSystemsTempFiles/
+/dvt/
+/.jxbrowser.userdata/

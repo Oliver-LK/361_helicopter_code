@@ -9,7 +9,7 @@
 // The buttons are:  UP and DOWN (on the Orbit daughterboard) plus
 // LEFT and RIGHT on the Tiva.
 //
-// P.J. Bones UCECE
+// P.J. Bones UCECEj
 // Last modified:  7.2.2018
 // 
 // *******************************************************
