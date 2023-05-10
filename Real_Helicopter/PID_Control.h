@@ -14,5 +14,5 @@ typedef struct {
 } gains_t;
 
 
-int16_t yaw_controller(int32_t desired_position, int32_t current_position, gains_t gains);
+int16_t controller(int32_t desired_position, int32_t current_position, gains_t gains);
 

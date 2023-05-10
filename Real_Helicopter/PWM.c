@@ -16,7 +16,7 @@
 
 
 void
-setPWM_main (uint32_t ui32Freq, uint32_t ui32Duty)
+setPWM_main (uint32_t ui32Duty)
 {
     // Calculate the PWM period corresponding to the freq.
     uint32_t ui32Period =
@@ -48,8 +48,8 @@ void initialisePWM (void)
     PWMGenConfigure(PWM_TAIL_BASE, PWM_TAIL_GEN ,
                         PWM_GEN_MODE_UP_DOWN | PWM_GEN_MODE_NO_SYNC);
     // Set the initial PWM parameters
-    setPWM_main (PWM_START_RATE_HZ, PWM_FIXED_DUTY);
-    setPWM_tail (PWM_START_RATE_HZ, PWM_FIXED_DUTY);
+    setPWM_main (PWM_FIXED_DUTY);
+    setPWM_tail (PWM_FIXED_DUTY);
 
     PWMGenEnable(PWM_MAIN_BASE, PWM_MAIN_GEN);
     PWMGenEnable(PWM_TAIL_BASE, PWM_TAIL_GEN);
@@ -67,7 +67,7 @@ void setPWM_tail (uint32_t ui32Duty) {
 
     // Calculate the PWM period corresponding to the freq.
         uint32_t ui32Period =
-            SysCtlClockGet() / PWM_DIVIDER / ui32Freq;
+            SysCtlClockGet() / PWM_DIVIDER / PWM_START_RATE_HZ;
 
         PWMGenPeriodSet(PWM_TAIL_BASE, PWM_TAIL_GEN, ui32Period);
         PWMPulseWidthSet(PWM_TAIL_BASE, PWM_TAIL_OUTNUM,

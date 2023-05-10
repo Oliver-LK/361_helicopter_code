@@ -18,8 +18,8 @@ typedef enum {
 } heli_state_t;
 
 typedef struct {
-    int32_t alt_desired;
-    int16_t yaw_desired;
+    int32_t alt;
+    int16_t yaw;
 
 } pos_t;
 
@@ -36,7 +36,7 @@ heli_state_t change_state(heli_state_t current_heli_state, task_t* tasks);
 
 
 
-pos_t* set_desired_pos(pos_t* desired_pos, heli_state_t current_heli_state);
+void set_desired_pos(pos_t* desired_pos, heli_state_t current_heli_state);
 //Reads the buttons and alters the desired position for the helicopter. Maybe should be elsewhere.
 
 

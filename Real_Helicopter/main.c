@@ -127,10 +127,10 @@ int main(void) {
 
     gains_t K_yaw = {1,1,1, 1000};
     gains_t K_alt = {3,1,20, 1000};
-    desired_pos = {0,0};
+    pos_t desired_pos = {0,0};
     heli_state_t heli_state = FLYING; // Set to FLYING just for testing. The real helicopter will start in the LANDED state.
 
-    tasks_t tasks = {1,1}; //Tasks the helicopter must complete before changing state. Set to 1,1 for testing.
+    //task_t tasks = {1,1}; //Tasks the helicopter must complete before changing state. Set to 1,1 for testing.
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -152,8 +152,8 @@ int main(void) {
         // Calculate and display the rounded mean of the buffer contents
         int32_t adc_av =  give_adc_av();
         int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
-        yaw_int = get_yaw();
-        yaw_dec = yaw_decimal();
+        int16_t yaw_int = get_yaw();
+        int16_t yaw_dec = yaw_decimal();
         displayPos(alt_percentage, yaw_int, yaw_dec); // Displays the helicopter's position.
 
         //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
