@@ -128,9 +128,9 @@ int main(void) {
     gains_t K_yaw = {1,1,1, 1000};
     gains_t K_alt = {3,1,20, 1000};
     desired_pos = {0,0};
-    heli_state_t heli_state = LANDED;
+    heli_state_t heli_state = FLYING; // Set to FLYING just for testing. The real helicopter will start in the LANDED state.
 
-    tasks_t tasks = {1,1};
+    tasks_t tasks = {1,1}; //Tasks the helicopter must complete before changing state. Set to 1,1 for testing.
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -164,17 +164,17 @@ int main(void) {
         }
 
 
-        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
-        alt_duty = controller(desired_pos.alt, adc_av, K_alt);
+        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw); //Sets the yaw duty cycle based off the desired yaw position.
+        alt_duty = controller(desired_pos.alt, adc_av, K_alt); //Sets the alt duty cycle based off the desired alt position.
 
 
 
-        set_desired_pos(&desired_pos, heli_state);
+        set_desired_pos(&desired_pos, heli_state); //Checks for a change in the desired position.
 
-        setPWM_main (yaw_duty);
-        setPWM_tail (alt_duty);
+        setPWM_main (yaw_duty); // Changes the yaw duty cycle in accordance with the calculations done by the PID controller.
+        setPWM_tail (alt_duty); // Changes the alt duty cycle in accordance with the calculations done by the PID controller.
 
-        heli_state = change_state(heli_state, &tasks);
+        //heli_state = change_state(heli_state, &tasks); //Changes the state of the helicopter.
         message_time++;
 
         //Redundant Code
