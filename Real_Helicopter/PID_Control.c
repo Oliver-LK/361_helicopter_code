@@ -16,7 +16,7 @@ static int16_t prev_yaw_error = 0;
 static int16_t previous_desired_pos = 0;
 static int16_t accumulated_error = 0;
 
-gains_t K_yaw = {1,1,1, 1000};
+gains_t K_yaw = {10,1,10, 10000};
 gains_t K_alt = {3,1,20, 1000};
 
 int16_t controller(int32_t desired_position, int32_t current_position, gains_t gains)

@@ -53,6 +53,6 @@
 
 void initialisePWM (void);
 
-void setPWM_main (uint32_t ui32Freq, uint32_t ui32Duty);
+void setPWM_main (uint32_t main_duty);
 
-void setPWM_tail (uint32_t ui32Freq, uint32_t ui32Duty);
+void setPWM_tail (uint32_t tail_duty);

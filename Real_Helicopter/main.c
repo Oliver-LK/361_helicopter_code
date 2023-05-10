@@ -31,6 +31,7 @@
 #include "State.h"
 #include "UART.h"
 #include "PWM.h"
+#include "PID_Control.h"
 #define MAX_STR_LEN 16
 
 
@@ -117,10 +118,19 @@ void do_init(void)
 int main(void) {
 
     static uint8_t message_time = 0;
+    uint8_t yaw_duty = 0;
+    uint8_t alt_duty = 0;
     int32_t sum = 0; // Sum variable for reading circular buffer.
     uint16_t i;
     // Calls initialisation function
     do_init();
+
+    gains_t K_yaw = {1,1,1, 1000};
+    gains_t K_alt = {3,1,20, 1000};
+    desired_pos = {0,0};
+    heli_state_t heli_state = LANDED;
+
+    tasks_t tasks = {1,1};
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -142,7 +152,9 @@ int main(void) {
         // Calculate and display the rounded mean of the buffer contents
         int32_t adc_av =  give_adc_av();
         int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
-        displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+        yaw_int = get_yaw();
+        yaw_dec = yaw_decimal();
+        displayPos(alt_percentage, yaw_int, yaw_dec); // Displays the helicopter's position.
 
         //The following code is test code... I'm very skeptical about it, but reading from uartDemo.c it seems like the was UART works.
         if (message_time >10) {
@@ -152,6 +164,17 @@ int main(void) {
         }
 
 
+        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
+        alt_duty = controller(desired_pos.alt, adc_av, K_alt);
+
+
+
+        set_desired_pos(&desired_pos, heli_state);
+
+        setPWM_main (yaw_duty);
+        setPWM_tail (alt_duty);
+
+        heli_state = change_state(heli_state, &tasks);
         message_time++;
 
         //Redundant Code
