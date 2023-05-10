@@ -163,13 +163,10 @@ int main(void) {
             message_time = 0;
         }
 
+        set_desired_pos(&desired_pos, heli_state); //Checks for a change in the desired position.`
 
         yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw); //Sets the yaw duty cycle based off the desired yaw position.
         alt_duty = controller(desired_pos.alt, adc_av, K_alt); //Sets the alt duty cycle based off the desired alt position.
-
-
-
-        set_desired_pos(&desired_pos, heli_state); //Checks for a change in the desired position.
 
         setPWM_main (yaw_duty); // Changes the yaw duty cycle in accordance with the calculations done by the PID controller.
         setPWM_tail (alt_duty); // Changes the alt duty cycle in accordance with the calculations done by the PID controller.
