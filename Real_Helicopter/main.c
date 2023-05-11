@@ -30,6 +30,7 @@
 #include "altitude.h"
 #include "PWM.h"
 #include "UART.h"
+#include "PID_Control.h"
 
 #define MAX_STR_LEN 16
 
@@ -96,16 +97,20 @@ void do_init(void)
 int main(void) {
 
     int32_t sum = 0; // Sum variable for reading circular buffer.
-    uint8_t test_duty = 100;
+    //uint8_t test_duty = 100;
     uint16_t i;
     // Calls initialisation function
     do_init();
     uint8_t slowTick = 0;
 
+    uint8_t alt_duty = 0;
+
     // Enable interrupts to the processor.
     IntMasterEnable();
 
 
+    //gains_t K_yaw = {10,1,10, 10000};
+    gains_t K_alt = {3,1,20, 1000};
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
@@ -121,21 +126,24 @@ int main(void) {
         int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
 
-
+        alt_duty = controller(1000, adc_av, K_alt);
 
         if(button_event(LEFT) == PUSHED) {
             ADC_offset = adc_av; // Sets the new zero-point for the altitude.
         }
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
-        setPWM_tail(test_duty);
+
+
+
+        setPWM_main(alt_duty);
 
         if (slowTick > 10)
         {
             slowTick = 0;
             // Form and send a status message to the console
             usprintf (statusStr, "Hi :) | \r\n"); // * usprintf
-            UARTSend (statusStr);
+            //UARTSend (statusStr);
         }
         slowTick++;
 
