@@ -29,8 +29,11 @@
 #include "yaw.h"
 #include "altitude.h"
 #include "PWM.h"
+#include "UART.h"
 
+#define MAX_STR_LEN 16
 
+char statusStr[MAX_STR_LEN + 1];
 
 void initClock (void)
 {
@@ -64,6 +67,7 @@ void do_init(void)
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     initButtons ();
+    initialiseUSB_UART();
     initialisePWM ();
 
     //  Interrupt Pins initialisation for yaw monitoring.
@@ -96,6 +100,7 @@ int main(void) {
     uint16_t i;
     // Calls initialisation function
     do_init();
+    uint8_t slowTick = 0;
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -124,6 +129,15 @@ int main(void) {
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
         setPWM_tail(test_duty);
+
+        if (slowTick > 10)
+        {
+            slowTick = 0;
+            // Form and send a status message to the console
+            usprintf (statusStr, "Hi :) | \r\n"); // * usprintf
+            UARTSend (statusStr);
+        }
+        slowTick++;
 
 
 
