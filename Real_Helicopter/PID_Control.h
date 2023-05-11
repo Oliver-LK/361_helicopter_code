@@ -17,6 +17,8 @@ typedef struct {
 } gains_t;
 
 
+void set_desired_pos(pos_t* desired_pos);
+
 int16_t controller(int32_t desired_position, int32_t current_position, gains_t gains);
 
 #endif //PID_CONTROL_H

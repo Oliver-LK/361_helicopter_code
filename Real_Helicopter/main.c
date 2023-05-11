@@ -109,8 +109,10 @@ int main(void) {
     IntMasterEnable();
 
 
+
     //gains_t K_yaw = {10,1,10, 10000};
     gains_t K_alt = {3,1,20, 1000};
+    pos_t desired_pos = {0,0};
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
@@ -125,29 +127,31 @@ int main(void) {
         int32_t adc_av =  give_adc_av();
         int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
+        set_desired_pos(&desired_pos);
 
-        alt_duty = controller(1000, adc_av, K_alt);
+        alt_duty = controller(desired_pos.alt, adc_av, K_alt);
+        setPWM_main(alt_duty);
 
-        if(button_event(LEFT) == PUSHED) {
-            ADC_offset = adc_av; // Sets the new zero-point for the altitude.
-        }
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
 
 
-        setPWM_main(alt_duty);
-
         if (slowTick > 10)
         {
             slowTick = 0;
             // Form and send a status message to the console
-            usprintf (statusStr, "Hi :) | \r\n"); // * usprintf
-            //UARTSend (statusStr);
+            usprintf (statusStr, "Error: %4i \r\n", desired_pos.alt - adc_av ); // * usprintf
+            UARTSend (statusStr);
         }
         slowTick++;
 
+        updateButtons();
 
+
+        //        if(checkButton(LEFT) == PUSHED) {
+        //            ADC_offset = adc_av; // Sets the new zero-point for the altitude.
+        //        }
 
     }
 
