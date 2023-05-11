@@ -28,6 +28,7 @@
 #include "buttons4.h"
 #include "yaw.h"
 #include "altitude.h"
+#include "PWM.h"
 
 
 
@@ -63,6 +64,7 @@ void do_init(void)
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
     initButtons ();
+    initialisePWM ();
 
     //  Interrupt Pins initialisation for yaw monitoring.
 
@@ -78,6 +80,9 @@ void do_init(void)
     GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
 
     GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
+
+    PWMOutputState(PWM_MAIN_BASE, PWM_MAIN_OUTBIT, true);
+    PWMOutputState(PWM_TAIL_BASE, PWM_TAIL_OUTBIT, true);
 }
 
 //#############################################  END OF INIT ########################################
@@ -87,6 +92,7 @@ void do_init(void)
 int main(void) {
 
     int32_t sum = 0; // Sum variable for reading circular buffer.
+    uint8_t test_duty = 100;
     uint16_t i;
     // Calls initialisation function
     do_init();
@@ -117,30 +123,9 @@ int main(void) {
         }
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+        setPWM_tail(test_duty);
 
 
-        //Redundant Code
-/*        switch(displaystate)
-        {
-            case(percentageState):
-                displayPercentage(percentage);
-                break;
-
-            case(meanState):
-                displayMeanVal(displayPercentage(percentage), yaw_decimal());
-                break;
-
-            case(blankState):
-                displayBlank();
-                break;
-
-        }*/
-        //        displayMeanVal (adc_av, g_ulSampCnt);
-        /*
-                if(button_event(UP) == PUSHED) {
-                    display_change();
-                }
-        */
 
     }
 
