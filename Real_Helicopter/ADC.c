@@ -31,8 +31,12 @@ void SysTickIntHandler(void)
 {
     // Initiate a conversion
     ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
+    //Need interrupts to calculate:
+    //PID Errors
+    //
     //g_ulSampCnt++;
 }
+
 
 
 // The handler for the ADC conversion complete interrupt.

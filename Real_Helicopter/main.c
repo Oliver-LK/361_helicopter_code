@@ -35,8 +35,12 @@
 #define MAX_STR_LEN 16
 
 
-#define ALT_MIN 2358 //95%  of the maximum voltage, which is 5% above 0 altitude.
+//For real helicopter, ALT_MIN 2358  ALT_MAX 1365
+
+#define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
 #define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
+
+
 #define TEN_PERCENT_CHANGE 121
 char statusStr[MAX_STR_LEN + 1];
 
@@ -71,9 +75,10 @@ void do_init(void)
     initADC ();
     initDisplay ();
     initCircBuf (&g_inBuffer, BUF_SIZE);
-    initButtons ();
+
     initialiseUSB_UART();
     initialisePWM ();
+    initButtons ();
 
     //  Interrupt Pins initialisation for yaw monitoring.
 
@@ -115,8 +120,8 @@ int main(void) {
 
 
 
-    gains_t K_yaw = {10,0,0, 10};
-    gains_t K_alt = {8,0,0, 10};
+    gains_t K_yaw = {5,0,0, 10};
+    gains_t K_alt = {8,0,0, -10};
     pos_t desired_pos = {(ALT_MIN + ALT_MAX)/ 2, 0 };
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
@@ -137,25 +142,25 @@ int main(void) {
         alt_duty = controller(desired_pos.alt, adc_av, K_alt);
         yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
         setPWM_main(alt_duty);
-        setPWM_main(yaw_duty);
+        setPWM_tail(yaw_duty);
 
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
 
-
-        if (slowTick > 20)
+        if (slowTick > 40)
         {
             slowTick = 0;
             // Form and send a status message to the console
-            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
-                        UARTSend (statusStr);
-                        usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
-                        UARTSend (statusStr);
-            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
+
+//            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
+//            UARTSend (statusStr);
+//            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
+//            UARTSend (statusStr);
+            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
             UARTSend (statusStr);
-            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
-            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Error: %4i \r\n",get_yaw_counter() - desired_pos.yaw); // * usprintf
+                        UARTSend (statusStr);
         }
         slowTick++;
 

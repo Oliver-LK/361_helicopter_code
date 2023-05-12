@@ -14,15 +14,15 @@ typedef struct {
 
 typedef struct {
 
-    uint8_t Kp;
-    uint8_t Kd;
-    uint8_t Ki;
-    uint16_t divisor;
+    int8_t Kp;
+    int8_t Kd;
+    int8_t Ki;
+    int16_t divisor;
 
 } gains_t;
 
 
-int32_t error;
+
 
 void set_desired_pos(pos_t* desired_pos);
 

@@ -8,7 +8,7 @@
 #include "PID_Control.h"
 #include "buttons4.h"
 
-#define PWM_DUTY_MAX 55
+#define PWM_DUTY_MAX 70
 #define PWM_DUTY_MIN 5
 
 #define ALT_MIN 2358 //95%  of the maximum voltage, which is 5% above 0 altitude.
@@ -52,7 +52,7 @@ int16_t controller(int32_t desired_position, int32_t current_position, gains_t g
     //This function is designed to be called twice - once for altitude, once for yaw.
 
     //if (desired_position == previous_desired_pos) {
-   error =  desired_position - current_position;
+   int32_t error =  desired_position - current_position;
 
 
    int16_t PWM_duty = gains.Kp * error  + gains.Ki * accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.

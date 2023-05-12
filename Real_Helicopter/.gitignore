@@ -4,6 +4,7 @@ tm4c123gh6pm_startup_ccs.c
 targetConfigs/*
 Debug/*
 .launches/*
+*.tmp
 .settings/*
 .ccsproject
 .cproject
