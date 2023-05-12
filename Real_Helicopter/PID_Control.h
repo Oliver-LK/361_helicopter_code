@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct {
+    int32_t alt;
+    int16_t yaw;
+
+} pos_t;
 
 typedef struct {
 
@@ -16,6 +21,8 @@ typedef struct {
 
 } gains_t;
 
+
+int32_t error;
 
 void set_desired_pos(pos_t* desired_pos);
 

@@ -15,11 +15,7 @@
 #define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
 #define TEN_PERCENT_CHANGE 121 //10% of the voltage range from 0% altitude to 100% altitude.
 
-typedef struct {
-    int32_t alt;
-    int16_t yaw;
 
-} pos_t;
 
 
 //int16_t array[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 224};
@@ -56,10 +52,10 @@ int16_t controller(int32_t desired_position, int32_t current_position, gains_t g
     //This function is designed to be called twice - once for altitude, once for yaw.
 
     //if (desired_position == previous_desired_pos) {
-    int32_t error = desired_position - current_position;
+   error =  desired_position - current_position;
 
 
-   uint8_t PWM_duty = gains.Kp * error  + gains.Ki * accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
+   int16_t PWM_duty = gains.Kp * error  + gains.Ki * accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
    PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
 
     if(PWM_duty > PWM_DUTY_MAX) {

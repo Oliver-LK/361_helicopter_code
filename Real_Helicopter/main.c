@@ -34,6 +34,10 @@
 
 #define MAX_STR_LEN 16
 
+
+#define ALT_MIN 2358 //95%  of the maximum voltage, which is 5% above 0 altitude.
+#define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
+#define TEN_PERCENT_CHANGE 121
 char statusStr[MAX_STR_LEN + 1];
 
 void initClock (void)
@@ -104,15 +108,16 @@ int main(void) {
     uint8_t slowTick = 0;
 
     uint8_t alt_duty = 0;
+    uint8_t yaw_duty = 0;
 
     // Enable interrupts to the processor.
     IntMasterEnable();
 
 
 
-    //gains_t K_yaw = {10,1,10, 10000};
-    gains_t K_alt = {3,1,20, 1000};
-    pos_t desired_pos = {0,0};
+    gains_t K_yaw = {10,0,0, 10};
+    gains_t K_alt = {8,0,0, 10};
+    pos_t desired_pos = {(ALT_MIN + ALT_MAX)/ 2, 0 };
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
@@ -130,18 +135,26 @@ int main(void) {
         set_desired_pos(&desired_pos);
 
         alt_duty = controller(desired_pos.alt, adc_av, K_alt);
+        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
         setPWM_main(alt_duty);
+        setPWM_main(yaw_duty);
 
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
 
 
 
-        if (slowTick > 10)
+        if (slowTick > 20)
         {
             slowTick = 0;
             // Form and send a status message to the console
-            usprintf (statusStr, "Error: %4i \r\n", desired_pos.alt - adc_av ); // * usprintf
+            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
+                        UARTSend (statusStr);
+                        usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
+                        UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
             UARTSend (statusStr);
         }
         slowTick++;
