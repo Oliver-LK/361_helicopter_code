@@ -32,17 +32,11 @@
 #include "UART.h"
 #include "PID_Control.h"
 
+// UART stuff
 #define MAX_STR_LEN 16
-
-
-//For real helicopter, ALT_MIN 2358  ALT_MAX 1365
-
-#define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
-#define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
-
-
-#define TEN_PERCENT_CHANGE 121
 char statusStr[MAX_STR_LEN + 1];
+
+void SysTickIntHandler(void);
 
 void initClock (void)
 {
@@ -66,6 +60,26 @@ void initClock (void)
 // *******************************************************
 
 
+
+// The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
+void SysTickIntHandler(void)
+{
+    // Initiate a conversion
+    ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
+    //Need interrupts to calculate:
+    //PID Errors
+    //
+    yaw_error = desired.yaw - get_yaw_counter();
+    yaw_error_incr += yaw_error / SAMPLE_RATE_HZ;
+    yaw_error_deriv = (yaw_error - prev_yaw_error) * SAMPLE_RATE_HZ;
+    yaw_error = prev_yaw_error;
+
+    alt_error = desired.alt - adc_av;
+    alt_error_incr += alt_error / SAMPLE_RATE_HZ;
+    alt_error_deriv = (alt_error - prev_alt_error) * SAMPLE_RATE_HZ;
+    alt_error = prev_alt_error;
+    //g_ulSampCnt++;
+}
 
 
 void do_init(void)
@@ -139,8 +153,8 @@ int main(void) {
 
         set_desired_pos(&desired_pos);
 
-        alt_duty = controller(desired_pos.alt, adc_av, K_alt);
-        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
+        alt_duty = alt_controller(desired_pos.alt, adc_av, K_alt);
+        yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
         setPWM_main(alt_duty);
         setPWM_tail(yaw_duty);
 

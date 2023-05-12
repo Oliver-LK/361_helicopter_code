@@ -26,16 +26,6 @@
 #include "display.h"
 
 
-// The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
-void SysTickIntHandler(void)
-{
-    // Initiate a conversion
-    ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
-    //Need interrupts to calculate:
-    //PID Errors
-    //
-    //g_ulSampCnt++;
-}
 
 
 
