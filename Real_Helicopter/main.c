@@ -32,15 +32,17 @@
 #include "UART.h"
 #include "PID_Control.h"
 
-#define MAX_STR_LEN 16
-
 
 //For real helicopter, ALT_MIN 2358  ALT_MAX 1365
 
 
+#define LOOP_MAX 100
 
-
+#define MAX_STR_LEN 16
 char statusStr[MAX_STR_LEN + 1];
+
+
+uint16_t task_timer = 0;
 
 void initClock (void)
 {
@@ -104,11 +106,12 @@ void do_init(void)
 
 int main(void) {
 
+    // Calls initialisation function
+    do_init();
+
     int32_t sum = 0; // Sum variable for reading circular buffer.
     //uint8_t test_duty = 100;
     uint16_t i;
-    // Calls initialisation function
-    do_init();
     uint8_t slowTick = 0;
 
     uint8_t alt_duty = 0;
@@ -128,20 +131,26 @@ int main(void) {
     for (i = 0; i < BUF_SIZE; i++)
                 sum = sum + readCircBuf (&g_inBuffer);
     uint16_t ADC_offset = give_adc_av(); //Sets ADC offset.
+    int32_t adc_av = 0;
+    int32_t alt_percentage = 0;
 
 
     while (1)
     {
         // Calculate and display the rounded mean of the buffer contents
-        int32_t adc_av =  give_adc_av();
-        int32_t alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
-        set_desired_pos(&desired_pos);
+        for (task_timer = 0; task_timer < LOOP_MAX; task_timer++) {
+            adc_av =  give_adc_av();
+            alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
-        alt_duty = controller(desired_pos.alt, adc_av, K_alt);
-        yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
-        setPWM_main(alt_duty);
-        setPWM_tail(yaw_duty);
+            set_desired_pos(&desired_pos);
+
+            alt_duty = controller(desired_pos.alt, adc_av, K_alt);
+            yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
+            setPWM_main(alt_duty);
+            setPWM_tail(yaw_duty);
+        }
+
 
 
         displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
