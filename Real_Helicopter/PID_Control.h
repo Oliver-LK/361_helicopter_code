@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "altitude.h"
 
 typedef struct {
     int32_t alt;
@@ -22,7 +23,7 @@ typedef struct {
 } gains_t;
 
 
-
+#define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 
 void set_desired_pos(pos_t* desired_pos);
 

@@ -8,12 +8,10 @@
 #include "PID_Control.h"
 #include "buttons4.h"
 
+
 #define PWM_DUTY_MAX 70
 #define PWM_DUTY_MIN 5
 
-#define ALT_MIN 2358 //95%  of the maximum voltage, which is 5% above 0 altitude.
-#define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
-#define TEN_PERCENT_CHANGE 121 //10% of the voltage range from 0% altitude to 100% altitude.
 
 
 

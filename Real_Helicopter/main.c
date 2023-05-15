@@ -37,11 +37,9 @@
 
 //For real helicopter, ALT_MIN 2358  ALT_MAX 1365
 
-#define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
-#define ALT_MAX 1365 //5% of the maximum voltage, which is 95% above 0 altitude.
 
 
-#define TEN_PERCENT_CHANGE 121
+
 char statusStr[MAX_STR_LEN + 1];
 
 void initClock (void)
@@ -60,6 +58,7 @@ void initClock (void)
     // Enable interrupt and device
     SysTickIntEnable();
     SysTickEnable();
+    SysCtlPWMClockSet(PWM_DIVIDER_CODE);
 }
 
 
