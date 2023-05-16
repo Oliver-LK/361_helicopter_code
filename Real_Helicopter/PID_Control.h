@@ -26,9 +26,9 @@ typedef struct {
 
 typedef struct {
 
-    int8_t Kp;
-    int8_t Kd;
-    int8_t Ki;
+    int32_t Kp;
+    int32_t Kd;
+    int32_t Ki;
     int16_t divisor;
 
 } gains_t;
@@ -36,13 +36,15 @@ typedef struct {
 
 #define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 
-
+static int32_t yaw_accumulated_error = 0;
 
 void set_desired_pos(pos_t* desired_pos);
 
 int16_t alt_controller(int32_t desired_position, int32_t current_position);
 
 int16_t yaw_controller(int32_t desired_position, int32_t current_position);
+
+int32_t return_i_error(void);
 
 
 
