@@ -22,7 +22,7 @@
 
 //int16_t array[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 224};
 
-gains_t YAW_GAINS = {10,0,0, -10};
+gains_t YAW_GAINS = {1000,0,0, -1000};
 gains_t ALT_GAINS = {8,0,0, -10};
 
 
@@ -92,7 +92,7 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
 int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 {
     gains_t gains = YAW_GAINS;
-
+//    static int32_t yaw_accumulated_error = 0;
     //if (desired_position == previous_desired_pos) {
    int32_t error =  desired_position - current_position;
 
@@ -114,7 +114,11 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     //prev_yaw_error = error;
-    //yaw_accumulated_error += error;
+//    yaw_accumulated_error += error;
+//
+//    if (error == 0) {
+//        yaw_accumulated_error = 0;
+//    }
 
     /*} else {
 

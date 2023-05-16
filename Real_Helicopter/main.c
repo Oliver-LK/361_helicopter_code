@@ -148,7 +148,7 @@ int main(void) {
 //            UARTSend (statusStr);
             usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
             UARTSend (statusStr);
-            usprintf (statusStr, "Yaw Error: %4i \r\n",get_yaw_counter()); // * usprintf
+            usprintf (statusStr, "Yaw Error: %4i \r\n",get_yaw_counter() - desired_pos.yaw); // * usprintf
                         UARTSend (statusStr);
         }
         slowTick++;
