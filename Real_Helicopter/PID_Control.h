@@ -45,7 +45,9 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position);
 
 int16_t yaw_controller(int32_t desired_position, int32_t current_position);
 
-int32_t return_i_error(void);
+int32_t return_iyaw_error(void);
+
+int32_t return_ialt_error(void);
 
 
 

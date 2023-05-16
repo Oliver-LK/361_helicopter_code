@@ -147,11 +147,17 @@ int main(void) {
 //            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
 //            UARTSend (statusStr);
 //            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
-            usprintf (statusStr, "Yaw I error: %4i \r\n", return_i_error()); // * usprintf
+            usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
 
             UARTSend (statusStr);
             usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
                         UARTSend (statusStr);
+
+            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
+            UARTSend (statusStr);
+
+            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
+            UARTSend (statusStr);
         }
         slowTick++;
 
