@@ -37,6 +37,7 @@ typedef struct {
 #define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 
 static int32_t yaw_accumulated_error = 0;
+static int32_t alt_accumulated_error = 0;
 
 void set_desired_pos(pos_t* desired_pos);
 
