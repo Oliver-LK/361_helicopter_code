@@ -65,8 +65,6 @@ void initClock (void)
 
 
 
-
-
 void do_init(void)
 {
     //Initialisation function to tidy up the start of the program.
@@ -78,21 +76,8 @@ void do_init(void)
     initialiseUSB_UART();
     initialisePWM ();
     initButtons ();
-
-    //  Interrupt Pins initialisation for yaw monitoring.
-
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-
-    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-//    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
-//                   GPIO_DIR_MODE_IN);
-
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
-                   GPIO_BOTH_EDGES);
-
-    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
-
-    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
+    init_yaw_ISR();
+    //init_abs_yaw_ISR();
 
     PWMOutputState(PWM_MAIN_BASE, PWM_MAIN_OUTBIT, true);
     PWMOutputState(PWM_TAIL_BASE, PWM_TAIL_OUTBIT, true);
@@ -163,7 +148,7 @@ int main(void) {
 //            UARTSend (statusStr);
             usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
             UARTSend (statusStr);
-            usprintf (statusStr, "Yaw Error: %4i \r\n",get_yaw_counter() - desired_pos.yaw); // * usprintf
+            usprintf (statusStr, "Yaw Error: %4i \r\n",get_yaw_counter()); // * usprintf
                         UARTSend (statusStr);
         }
         slowTick++;

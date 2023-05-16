@@ -22,7 +22,7 @@
 
 //int16_t array[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 224};
 
-gains_t YAW_GAINS = {5,0,0, 10};
+gains_t YAW_GAINS = {10,0,0, -10};
 gains_t ALT_GAINS = {8,0,0, -10};
 
 
@@ -47,6 +47,14 @@ void set_desired_pos(pos_t* desired_pos) {
    } else if (checkButton(RIGHT) == PUSHED) {
        yaw_incr++; //Clockwise is negative.
    }
+
+   if (yaw_incr > 12) {
+
+       yaw_incr -= 24;
+   } else if (yaw_incr < -12) {
+
+       yaw_incr += 24;
+   }
    desired_pos->yaw = (yaw_incr * 15*448)/360; //Calculates the desired yaw.
 
 }
@@ -59,7 +67,7 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
    int32_t error =  desired_position - current_position;
 
 
-   int16_t PWM_duty = gains.Kp * error  + gains.Ki * accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
+   int16_t PWM_duty = gains.Kp * error;  //+ gains.Ki * alt_accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
    PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
 
     if(PWM_duty > PWM_DUTY_MAX) {
@@ -69,7 +77,7 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
     }
 
     //prev_yaw_error = error;
-    accumulated_error += error;
+    //alt_accumulated_error += error;
 
     /*} else {
 
@@ -88,8 +96,15 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     //if (desired_position == previous_desired_pos) {
    int32_t error =  desired_position - current_position;
 
+   if (error > 224) {
 
-   int16_t PWM_duty = gains.Kp * error  + gains.Ki * accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
+       error -= 448;
+   } else if (error < -223) {
+
+          error += 448;
+   }
+
+   int16_t PWM_duty = gains.Kp * error;//  + gains.Ki * yaw_accumulated_error; //+ gains.Kd * (error - prev_yaw_error) //Previous error will cause some trouble, so only have PI implemented at the moment.
    PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
 
     if(PWM_duty > PWM_DUTY_MAX) {
@@ -99,7 +114,7 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     //prev_yaw_error = error;
-    accumulated_error += error;
+    //yaw_accumulated_error += error;
 
     /*} else {
 
