@@ -29,14 +29,13 @@
 #include "ADC.h"
 #include "buttons4.h"
 
+// Predefined alts max and min
 #define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
 #define ALT_MAX 1600 //5% of the maximum voltage, which is 95% above 0 altitude.
 
 
 int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset);
 //Returns calculates and returns altitude percentage, avoiding the use of global variables.
-
-
 
 
 int32_t give_adc_av(void);

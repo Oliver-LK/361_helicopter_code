@@ -31,10 +31,7 @@ void SysTickIntHandler(void)
 {
     // Initiate a conversion
     ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
-    //Need interrupts to calculate:
-    //PID Errors
-    //
-    //g_ulSampCnt++;
+
 }
 
 
@@ -45,7 +42,6 @@ void ADCIntHandler(void)
 {
     uint32_t ulValue;
 
-    //
     // Get the single sample from ADC0.  ADC_BASE is defined in
     // inc/hw_memmap.h
     ADCSequenceDataGet(ADC0_BASE, 3, &ulValue);
@@ -56,6 +52,7 @@ void ADCIntHandler(void)
     // Clean up, clearing the interrupt
     ADCIntClear(ADC0_BASE, 3);
 }
+
 
 void initADC (void)
 {

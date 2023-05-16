@@ -67,16 +67,4 @@ int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset)
     return percentage;
 }
 
-//Redundant code
-/*uint16_t give_adc_offset(void)
-{
-    uint16_t i;
-    int32_t sum = 0;
-
-    for (i = 0; i < BUF_SIZE; i++)
-                    sum = sum + readCircBuf (&g_inBuffer);
-        uint16_t ADC_offset = (2 * sum + BUF_SIZE) / 2 / BUF_SIZE; //rounds ADC_offset instead of truncating it.
-
-    return ADC_offset;
-}*/
 

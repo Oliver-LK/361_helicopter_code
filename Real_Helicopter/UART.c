@@ -8,8 +8,11 @@
 // Last modified:   16.4.2018
 //
 
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_ints.h"

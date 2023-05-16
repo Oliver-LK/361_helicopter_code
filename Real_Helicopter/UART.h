@@ -10,6 +10,8 @@
 
 #ifndef UART_H
 #define UART_H
+
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"

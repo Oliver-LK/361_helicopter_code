@@ -64,8 +64,6 @@ void initClock (void)
 }
 
 
-// *******************************************************
-
 
 
 
@@ -121,15 +119,13 @@ int main(void) {
     IntMasterEnable();
 
 
-
-    gains_t K_yaw = {5,0,0, 10};
-    gains_t K_alt = {8,0,0, -10};
     pos_t desired_pos = {(ALT_MIN + ALT_MAX)/ 2, 0 };
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
     for (i = 0; i < BUF_SIZE; i++)
-                sum = sum + readCircBuf (&g_inBuffer);
+        sum = sum + readCircBuf (&g_inBuffer);
+
     uint16_t ADC_offset = give_adc_av(); //Sets ADC offset.
     int32_t adc_av = 0;
     int32_t alt_percentage = 0;
@@ -145,8 +141,8 @@ int main(void) {
 
             set_desired_pos(&desired_pos);
 
-            alt_duty = controller(desired_pos.alt, adc_av, K_alt);
-            yaw_duty = controller(desired_pos.yaw, get_yaw_counter(), K_yaw);
+            alt_duty = alt_controller(desired_pos.alt, adc_av);
+            yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
             setPWM_main(alt_duty);
             setPWM_tail(yaw_duty);
         }

@@ -1,5 +1,15 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements
+// CREATE DATE   : 7/3/2023
+// PURPOSE       : PWM configuration
+//
+// ***********************************************************
+
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_ints.h"
