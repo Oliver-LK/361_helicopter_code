@@ -124,20 +124,20 @@ int32_t get_yaw_counter(void) {
     return yaw_counter;
 }
 
-//void init_abs_yaw_ISR(void) {
-//
-//    //Interrupt for setting reference position to 0.
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-//
-//    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
-//
-//    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
-//
-//    GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
-//
-//    GPIOIntEnable(GPIO_PORTC_BASE,GPIO_INT_PIN_4);
-//
-//}
+void init_abs_yaw_ISR(void) {
+
+    //Interrupt for setting reference position to 0.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
+
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+
+    GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
+
+    GPIOIntEnable(GPIO_PORTC_BASE,GPIO_INT_PIN_4);
+
+}
 
 void init_yaw_ISR(void)
 {
@@ -155,10 +155,12 @@ void init_yaw_ISR(void)
     GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
 }
 
-//void abs_yaw_ISR(void) {
-//
-//    yaw_counter = 0;
-//    IntDisable(GPIO_PORTC_BASE);
-//
-//}
+void abs_yaw_ISR(void) {
+
+
+    yaw_counter = 0;
+    //IntDisable(GPIO_PORTC_BASE);
+    GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
+
+}
 

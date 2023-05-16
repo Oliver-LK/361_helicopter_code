@@ -22,7 +22,7 @@
 
 //int16_t array[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 224};
 
-gains_t YAW_GAINS = {3000,0,20, -1000};
+gains_t YAW_GAINS = {3000,0,40, -1000};
 gains_t ALT_GAINS = {80 , 0, 5, -100};
 
 
@@ -139,7 +139,7 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     if (slow_tick > 1000) {
-        if(yaw_accumulated_error < 5000 && yaw_accumulated_error > -5000 ) {
+        if(yaw_accumulated_error < YAW_T_MAX && yaw_accumulated_error > -YAW_T_MAX ) {
         yaw_accumulated_error += error;
         slow_tick = 0;
         }

@@ -39,6 +39,8 @@ typedef struct {
 static int32_t yaw_accumulated_error = 0;
 static int32_t alt_accumulated_error = 0;
 
+#define YAW_T_MAX 4000
+
 void set_desired_pos(pos_t* desired_pos);
 
 int16_t alt_controller(int32_t desired_position, int32_t current_position);

@@ -40,11 +40,11 @@ int8_t yaw_decimal(void);
 
 int32_t get_yaw_counter(void);
 //returns the yaw counter variable.
-//void init_abs_yaw_ISR(void);
+void init_abs_yaw_ISR(void);
 
 void init_yaw_ISR(void);
 //  Interrupt initialisation for yaw monitoring.
 //
-//void abs_yaw_ISR(void);
+void abs_yaw_ISR(void);
 
 #endif

@@ -77,7 +77,7 @@ void do_init(void)
     initialisePWM ();
     initButtons ();
     init_yaw_ISR();
-    //init_abs_yaw_ISR();
+    init_abs_yaw_ISR();
 
     PWMOutputState(PWM_MAIN_BASE, PWM_MAIN_OUTBIT, true);
     PWMOutputState(PWM_TAIL_BASE, PWM_TAIL_OUTBIT, true);
@@ -147,6 +147,10 @@ int main(void) {
 //            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
 //            UARTSend (statusStr);
 //            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
+
+            usprintf (statusStr, "============ \r\n"); // * usprintf
+
+            UARTSend (statusStr);
             usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
 
             UARTSend (statusStr);
