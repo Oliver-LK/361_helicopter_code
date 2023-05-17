@@ -37,11 +37,21 @@
 
 
 #define LOOP_MAX 100
-
 #define MAX_STR_LEN 16
+#define DISPLAY_FREQ (SAMPLE_RATE_HZ / 4)
+#define BUTTON_FREQ  (SAMPLE_RATE_HZ / 100)
+#define TX_FREQ (SAMPLE_RATE_HZ)
+
 char statusStr[MAX_STR_LEN + 1];
 
-uint16_t task_timer = 0;
+static uint16_t display_counter;
+static uint16_t button_counter;
+static uint16_t tx_counter;
+
+
+void SysTickIntHandler(void);
+//Generates an interrupt at SAMPLE_RATE_HZ frequency which tells the ADC to sample the altitude of the helicopter.
+
 
 void initClock (void)
 {
@@ -84,7 +94,17 @@ void do_init(void)
 
 //#############################################  END OF INIT ########################################
 
+// The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
+void SysTickIntHandler(void)
+{
+    // Initiate a conversion
+    ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
+    display_counter++;
+    button_counter++;
+    tx_counter++;
 
+
+}
 
 int main(void) {
 
@@ -94,10 +114,13 @@ int main(void) {
     int32_t sum = 0; // Sum variable for reading circular buffer.
     //uint8_t test_duty = 100;
     uint16_t i;
-    uint8_t slowTick = 0;
 
     uint8_t alt_duty = 0;
     uint8_t yaw_duty = 0;
+
+    display_counter = 0;
+    button_counter = 0;
+    tx_counter = 0;
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -120,38 +143,43 @@ int main(void) {
     {
         // Calculate and display the rounded mean of the buffer contents
 
-        for (task_timer = 0; task_timer < LOOP_MAX; task_timer++) {
-            adc_av =  give_adc_av();
-            alt_percentage = give_adc_percent(adc_av, ADC_offset);
-
-            set_desired_pos(&desired_pos);
-
-            alt_duty = alt_controller(desired_pos.alt, adc_av);
-            yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
-            setPWM_main(alt_duty);
-            setPWM_tail(yaw_duty);
-        }
-
         if(get_calibration() == 1) {
              IntDisable(INT_GPIOC_TM4C123);
 
          }
 
+        adc_av =  give_adc_av();
+        alt_percentage = give_adc_percent(adc_av, ADC_offset);
+
+        set_desired_pos(&desired_pos);
+
+        alt_duty = alt_controller(desired_pos.alt, adc_av);
+        yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
+        setPWM_main(alt_duty);
+        setPWM_tail(yaw_duty);
+
+        if (button_counter > (BUTTON_FREQ)) {
+            updateButtons();
+            button_counter = 0;
+        }
 
 
-        displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+        if (display_counter > (DISPLAY_FREQ)) {
+            displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+            display_counter = 0;
+
+        }
+
+        if (tx_counter > (TX_FREQ)) {
 
 
-        if (slowTick > 40)
-        {
-            slowTick = 0;
-            // Form and send a status message to the console
+        // Form and send a status message to the console
 
-//            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
-//            UARTSend (statusStr);
-//            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
-//            UARTSend (statusStr);
-//            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
+        //            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
+        //            UARTSend (statusStr);
+        //            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
+        //            UARTSend (statusStr);
+        //            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
 
             usprintf (statusStr, "============ \r\n"); // * usprintf
 
@@ -167,10 +195,12 @@ int main(void) {
 
             usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
             UARTSend (statusStr);
+            tx_counter = 0;
         }
-        slowTick++;
 
-        updateButtons();
+
+
+
 
 
         //        if(checkButton(LEFT) == PUSHED) {

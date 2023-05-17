@@ -133,7 +133,7 @@ void init_abs_yaw_ISR(void) {
 
     GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
 
-    GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+    GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_0, GPIO_FALLING_EDGE);
 
     GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
 
