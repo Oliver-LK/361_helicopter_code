@@ -134,6 +134,7 @@ int main(void) {
     tx_counter = 0;
     heli_state_t heli_state = TAKEOFF;
 
+    bool motor_off = 1;
     // Enable interrupts to the processor.
     IntMasterEnable();
 
@@ -161,12 +162,28 @@ int main(void) {
             case LANDED:
 
                 desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
-                desired_pos.alt = ALT_MIN + TEN_PERCENT_CHANGE/2; // Causes the PID controller to aim for the minimum altitude.
+                desired_pos.alt = ADC_offset; // Causes the PID controller to aim for the minimum altitude.
+                alt_duty = alt_controller(desired_pos.alt, adc_av);
+                yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
+                setPWM_main(alt_duty);
+                setPWM_tail(yaw_duty);
+
+//                if((desired_pos.yaw == get_yaw_counter() ) && (desired_pos.alt == adc_av)) {
+//
+//                    setPWM_main(0);
+//                    setPWM_tail(0);
+//                    motor_off = 1;
+//                }
+
+                if (checkButton(SWITCH) == 1 && motor_off ==1) {
+                    heli_state = TAKEOFF;
+                }
                 break;
 
             case TAKEOFF:
 
-                desired_pos.alt = ADC_offset * 99/100; //Sets the hover height.
+                motor_off = 0;
+                desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
                 alt_duty = alt_controller(desired_pos.alt, adc_av);
                 setPWM_main(alt_duty);
                 setPWM_tail(YAW_CALIBRATION_DUTY);
@@ -186,6 +203,9 @@ int main(void) {
                 yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
                 setPWM_main(alt_duty);
                 setPWM_tail(yaw_duty);
+                if (checkButton(SWITCH)==0) {
+                              heli_state = LANDED;
+                }
 
                 break;
 
@@ -228,7 +248,10 @@ int main(void) {
 
             UARTSend (statusStr);
             usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
-                        UARTSend (statusStr);
+
+//            usprintf (statusStr, "PID Yaw Error: %4i \r\n", return_yaw_error()); // * usprintf
+//                                    UARTSend (statusStr);
+//                        UARTSend (statusStr);
 
             usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
             UARTSend (statusStr);
