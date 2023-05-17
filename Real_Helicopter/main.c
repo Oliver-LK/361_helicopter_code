@@ -41,6 +41,8 @@
 #define DISPLAY_FREQ (SAMPLE_RATE_HZ / 4)
 #define BUTTON_FREQ  (SAMPLE_RATE_HZ / 100)
 #define TX_FREQ (SAMPLE_RATE_HZ)
+#define YAW_CALIBRATION_DUTY 15
+
 
 char statusStr[MAX_STR_LEN + 1];
 
@@ -51,6 +53,15 @@ static uint16_t tx_counter;
 
 void SysTickIntHandler(void);
 //Generates an interrupt at SAMPLE_RATE_HZ frequency which tells the ADC to sample the altitude of the helicopter.
+
+typedef enum {
+
+    LANDED = 0,
+    TAKEOFF,
+    FLYING
+
+} heli_state_t;
+
 
 
 void initClock (void)
@@ -121,6 +132,7 @@ int main(void) {
     display_counter = 0;
     button_counter = 0;
     tx_counter = 0;
+    heli_state_t heli_state = TAKEOFF;
 
     // Enable interrupts to the processor.
     IntMasterEnable();
@@ -143,20 +155,48 @@ int main(void) {
     {
         // Calculate and display the rounded mean of the buffer contents
 
-        if(get_calibration() == 1) {
-             IntDisable(INT_GPIOC_TM4C123);
 
-         }
+        switch(heli_state) {
+
+            case LANDED:
+
+                desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
+                desired_pos.alt = ALT_MIN + TEN_PERCENT_CHANGE/2; // Causes the PID controller to aim for the minimum altitude.
+                break;
+
+            case TAKEOFF:
+
+                desired_pos.alt = ADC_offset * 99/100; //Sets the hover height.
+                alt_duty = alt_controller(desired_pos.alt, adc_av);
+                setPWM_main(alt_duty);
+                setPWM_tail(YAW_CALIBRATION_DUTY);
+
+                //The heli needs to yaw until the reference is found. This is yet to be implemented.
+
+                if(get_calibration() == 1) {
+                     IntDisable(INT_GPIOC_TM4C123);
+                     heli_state = FLYING;
+
+                 }
+                break;
+            case FLYING:
+
+                set_desired_pos(&desired_pos);
+                alt_duty = alt_controller(desired_pos.alt, adc_av);
+                yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
+                setPWM_main(alt_duty);
+                setPWM_tail(yaw_duty);
+
+                break;
+
+        }
 
         adc_av =  give_adc_av();
         alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
-        set_desired_pos(&desired_pos);
 
-        alt_duty = alt_controller(desired_pos.alt, adc_av);
-        yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
-        setPWM_main(alt_duty);
-        setPWM_tail(yaw_duty);
+
+
 
         if (button_counter > (BUTTON_FREQ)) {
             updateButtons();
