@@ -47,4 +47,12 @@ void init_yaw_ISR(void);
 //
 void abs_yaw_ISR(void);
 
+bool get_calibration(void);
+
+static int8_t state;
+
+int8_t return_state(void);
+
+static bool calibration_complete = 0;
+
 #endif

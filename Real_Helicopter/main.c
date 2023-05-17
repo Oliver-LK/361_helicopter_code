@@ -41,7 +41,6 @@
 #define MAX_STR_LEN 16
 char statusStr[MAX_STR_LEN + 1];
 
-
 uint16_t task_timer = 0;
 
 void initClock (void)
@@ -116,6 +115,7 @@ int main(void) {
     int32_t alt_percentage = 0;
 
 
+
     while (1)
     {
         // Calculate and display the rounded mean of the buffer contents
@@ -131,6 +131,11 @@ int main(void) {
             setPWM_main(alt_duty);
             setPWM_tail(yaw_duty);
         }
+
+        if(get_calibration() == 1) {
+             IntDisable(INT_GPIOC_TM4C123);
+
+         }
 
 
 

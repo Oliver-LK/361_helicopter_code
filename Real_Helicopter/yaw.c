@@ -38,9 +38,10 @@ static uint8_t prev_yaw_state = 0; //static variable to represent the previous s
 static int16_t yaw_counter = 0; //
 
 
+
 void yaw_ISR(void)
 {
-    uint8_t state = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Reads the state of the two encoders.
+    state = GPIOPinRead(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Reads the state of the two encoders.
 
     switch(state)
     //Switch statement to decide whether the yaw angle is increasing. For clockwise yaw, the encoder states go:
@@ -86,6 +87,12 @@ void yaw_ISR(void)
     }
 
     prev_yaw_state = state;
+    if(yaw_counter > MAX_REV_THRESHOLD) {
+
+        yaw_counter -= TICKS_PER_REV;
+    } else if (yaw_counter < MIN_REV_THRESHOLD){
+        yaw_counter += TICKS_PER_REV;
+    }
 
     GPIOIntClear(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1); //Clears the interrupt so the micro can return to its regularly scheduled program.
 
@@ -97,12 +104,7 @@ void yaw_ISR(void)
 int32_t get_yaw(void)
 {
     //Calculates the yaw of the helicopter and converts it into degrees. Returns the integer component of the yaw.
-    if(yaw_counter > MAX_REV_THRESHOLD) {
 
-        yaw_counter -= TICKS_PER_REV;
-    } else if (yaw_counter < MIN_REV_THRESHOLD){
-        yaw_counter += TICKS_PER_REV;
-    }
     int16_t yaw = ((yaw_counter * DEG_PER_REV)/TICKS_PER_REV);
     return yaw;
 }
@@ -131,7 +133,7 @@ void init_abs_yaw_ISR(void) {
 
     GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
 
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+    GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
 
     GPIOIntRegister(GPIO_PORTC_BASE, abs_yaw_ISR);
 
@@ -159,8 +161,16 @@ void abs_yaw_ISR(void) {
 
 
     yaw_counter = 0;
-    //IntDisable(GPIO_PORTC_BASE);
     GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
+    calibration_complete = 1;
 
 }
 
+bool get_calibration(void) {
+    return calibration_complete;
+}
+
+int8_t return_state(void) {
+
+    return state;
+}
