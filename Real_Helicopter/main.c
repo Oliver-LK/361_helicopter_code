@@ -163,36 +163,47 @@ int main(void) {
 
             case LANDED:
 
-                if(motor_off != 1) {
+                //In the landed state, the helicopter sets its desired position to the reference yaw, and minimum altitude
+                //It then switches its motors off.
+                if(motor_off == 0) {
                     desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
                     if(get_yaw_counter() == 0 ) {
-                        desired_pos.alt = ADC_offset; // Causes the PID controller to aim for the minimum altitude.
+                        desired_pos.alt = ADC_offset; // Causes the PID controller to aim for the minimum altitude after desired yaw has been reached.
                     }
 
+                    //Sets duty cycle of main and tail rotors to enable the heli to reach desired positions.
                     alt_duty = alt_controller(desired_pos.alt, adc_av);
                     yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
                     setPWM_main(alt_duty);
                     setPWM_tail(yaw_duty);
 
-                    if((get_yaw_counter() == 0) && (adc_av == ADC_offset)) {
+
+                    //THE FOLLOWING CODE BREAKS IF THE SPEED IS TOO HIGH. DERIVATIVE CONTROL MAY BE NEEDED.
+    //**********************************************************************************************************************
+                    if((get_yaw_counter() == 0) && (adc_av == ADC_offset) ) {
+                        //If the helicopter has made it to the reference yaw and minimum altitude, switch the motors off.
 
                         setPWM_main(0);
                         setPWM_tail(0);
                         motor_off = 1;
                     }
                 }
+    //**********************************************************************************************************************
 
 
 
-
+                //Change state.
                 if (checkButton(SWITCH) == 1 && motor_off == 1) {
+                    SysCtlDelay (3000000); //Delay to prevent instantaneous state change.
                     heli_state = TAKEOFF;
                 }
                 break;
 
             case TAKEOFF:
 
-                motor_off = 0;
+                motor_off = 0; // Motors are now on and will need to be turned off to land.
+
+
                 if(get_calibration() == 0) {
                     desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
                     alt_duty = alt_controller(desired_pos.alt, adc_av);
@@ -201,12 +212,11 @@ int main(void) {
 
                 }
 
-
-                //The heli needs to yaw until the reference is found. This is yet to be implemented.
-
                 if(get_calibration() == 1) {
+                    //Sets calibrated
                      IntDisable(INT_GPIOC_TM4C123);
                      heli_state = FLYING;
+                     reset_yaw_incr(); //Resets the yaw increment to 0 for a new flight.
 
                  }
                 break;
@@ -261,14 +271,15 @@ int main(void) {
 //            usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
 //
 //            UARTSend (statusStr);
-//            usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
+            usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
+            UARTSend (statusStr);
 //
 ////            usprintf (statusStr, "PID Yaw Error: %4i \r\n", return_yaw_error()); // * usprintf
 ////                                    UARTSend (statusStr);
 ////                        UARTSend (statusStr);
 //
-//            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
-//            UARTSend (statusStr);
+            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
+            UARTSend (statusStr);
 //
 //            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
 //            UARTSend (statusStr);

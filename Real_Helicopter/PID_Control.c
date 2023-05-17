@@ -17,29 +17,27 @@
 
 // Global Constants
 #define PWM_DUTY_MAX 70
-#define PWM_DUTY_MIN 15
+#define PWM_DUTY_MIN 20
 
-
-//int16_t array[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 224};
 
 gains_t YAW_GAINS = {3000,0,40, -1000};
 gains_t ALT_GAINS = {80 , 0, 5, -100};
 
 
 //static int16_t previous_desired_pos = 0;
-
+static int8_t yaw_incr = 0;
 
 void set_desired_pos(pos_t* desired_pos) {
 
-    static int8_t yaw_incr = 0;
+
     if(checkButton(UP) == PUSHED) {
         desired_pos->alt -= TEN_PERCENT_CHANGE; // Up button increases altitude
-        if (desired_pos->alt < ALT_MAX) {   // Ensures the desired altiude can never exceed 95%.
+        if (desired_pos->alt < ALT_MAX) {   // Ensures the desired altitude can never exceed 95%.
             desired_pos->alt = ALT_MAX;
         }
     } else if (checkButton(DOWN) == PUSHED) {
         desired_pos->alt += TEN_PERCENT_CHANGE; // Down button increases altitude
-        if (desired_pos->alt > ALT_MIN) {   // Ensures the desired altiude can never drop below 5%.
+        if (desired_pos->alt > ALT_MIN) {   // Ensures the desired altitude can never drop below 5%.
             desired_pos->alt = ALT_MIN;
         }
     } else if (checkButton(LEFT) == PUSHED) {
@@ -174,6 +172,10 @@ int32_t return_iyaw_error(void){
 int32_t return_ialt_error(void){
 
     return alt_accumulated_error;
+}
+
+void reset_yaw_incr(void) {
+    yaw_incr = 0;
 }
 
 

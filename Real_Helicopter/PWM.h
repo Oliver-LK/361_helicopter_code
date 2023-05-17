@@ -29,7 +29,7 @@
 #define PWM_RATE_STEP_HZ   50
 #define PWM_RATE_MIN_HZ    50
 #define PWM_RATE_MAX_HZ    400
-#define PWM_FIXED_DUTY     67 // Just for testing
+#define PWM_FIXED_DUTY     0 // Just for testing
 #define PWM_FIXED_DUTY_MIN     5
 #define PWM_FIXED_DUTY_MAX     95
 #define PWM_DIVIDER_CODE   SYSCTL_PWMDIV_4

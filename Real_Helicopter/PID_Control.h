@@ -51,6 +51,6 @@ int32_t return_iyaw_error(void);
 
 int32_t return_ialt_error(void);
 
-
+void reset_yaw_incr(void);
 
 #endif //PID_CONTROL_H
