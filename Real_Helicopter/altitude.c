@@ -28,9 +28,7 @@
 #include "altitude.h"
 
 // Global Constants
-#define ADC_min 1241 // 1 volt in ADC counts when ADC is set to 3.3V
-#define ADC_max 2482 // 2 volts in ADC counts when ADC is set to 3.3V
-#define ADC_range (ADC_max - ADC_min)
+#define ADC_range (ALT_MIN - ALT_MAX)
 
 
 

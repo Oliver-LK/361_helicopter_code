@@ -41,7 +41,7 @@
 #define DISPLAY_FREQ (SAMPLE_RATE_HZ / 4)
 #define BUTTON_FREQ  (SAMPLE_RATE_HZ / 100)
 #define TX_FREQ (SAMPLE_RATE_HZ)
-#define YAW_CALIBRATION_DUTY 15
+#define YAW_CALIBRATION_DUTY 60
 
 
 char statusStr[MAX_STR_LEN + 1];
@@ -132,14 +132,14 @@ int main(void) {
     display_counter = 0;
     button_counter = 0;
     tx_counter = 0;
-    heli_state_t heli_state = TAKEOFF;
+    heli_state_t heli_state = LANDED;
 
     bool motor_off = 1;
     // Enable interrupts to the processor.
     IntMasterEnable();
 
 
-    pos_t desired_pos = {(ALT_MIN + ALT_MAX)/ 2, 0 };
+
 
     SysCtlDelay (3000000); //Delays the system to allow the circular buffer to fill up.
 
@@ -149,6 +149,8 @@ int main(void) {
     uint16_t ADC_offset = give_adc_av(); //Sets ADC offset.
     int32_t adc_av = 0;
     int32_t alt_percentage = 0;
+
+    pos_t desired_pos = {ADC_offset, 0 };
 
 
 
@@ -161,21 +163,29 @@ int main(void) {
 
             case LANDED:
 
-                desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
-                desired_pos.alt = ADC_offset; // Causes the PID controller to aim for the minimum altitude.
-                alt_duty = alt_controller(desired_pos.alt, adc_av);
-                yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
-                setPWM_main(alt_duty);
-                setPWM_tail(yaw_duty);
+                if(motor_off != 1) {
+                    desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
+                    if(get_yaw_counter() == 0 ) {
+                        desired_pos.alt = ADC_offset; // Causes the PID controller to aim for the minimum altitude.
+                    }
 
-//                if((desired_pos.yaw == get_yaw_counter() ) && (desired_pos.alt == adc_av)) {
-//
-//                    setPWM_main(0);
-//                    setPWM_tail(0);
-//                    motor_off = 1;
-//                }
+                    alt_duty = alt_controller(desired_pos.alt, adc_av);
+                    yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
+                    setPWM_main(alt_duty);
+                    setPWM_tail(yaw_duty);
 
-                if (checkButton(SWITCH) == 1 && motor_off ==1) {
+                    if((get_yaw_counter() == 0) && (adc_av == ADC_offset)) {
+
+                        setPWM_main(0);
+                        setPWM_tail(0);
+                        motor_off = 1;
+                    }
+                }
+
+
+
+
+                if (checkButton(SWITCH) == 1 && motor_off == 1) {
                     heli_state = TAKEOFF;
                 }
                 break;
@@ -183,10 +193,14 @@ int main(void) {
             case TAKEOFF:
 
                 motor_off = 0;
-                desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
-                alt_duty = alt_controller(desired_pos.alt, adc_av);
-                setPWM_main(alt_duty);
-                setPWM_tail(YAW_CALIBRATION_DUTY);
+                if(get_calibration() == 0) {
+                    desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
+                    alt_duty = alt_controller(desired_pos.alt, adc_av);
+                    setPWM_main(alt_duty);
+                    setPWM_tail(YAW_CALIBRATION_DUTY);
+
+                }
+
 
                 //The heli needs to yaw until the reference is found. This is yet to be implemented.
 
@@ -203,8 +217,8 @@ int main(void) {
                 yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
                 setPWM_main(alt_duty);
                 setPWM_tail(yaw_duty);
-                if (checkButton(SWITCH)==0) {
-                              heli_state = LANDED;
+                if (checkButton(SWITCH) == 0) {
+                      heli_state = LANDED;
                 }
 
                 break;
@@ -241,23 +255,26 @@ int main(void) {
         //            UARTSend (statusStr);
         //            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
 
-            usprintf (statusStr, "============ \r\n"); // * usprintf
+//            usprintf (statusStr, "============ \r\n"); // * usprintf
+//
+//            UARTSend (statusStr);
+//            usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
+//
+//            UARTSend (statusStr);
+//            usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
+//
+////            usprintf (statusStr, "PID Yaw Error: %4i \r\n", return_yaw_error()); // * usprintf
+////                                    UARTSend (statusStr);
+////                        UARTSend (statusStr);
+//
+//            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
+//            UARTSend (statusStr);
+//
+//            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
+//            UARTSend (statusStr);
 
-            UARTSend (statusStr);
-            usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
-
-            UARTSend (statusStr);
-            usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
-
-//            usprintf (statusStr, "PID Yaw Error: %4i \r\n", return_yaw_error()); // * usprintf
-//                                    UARTSend (statusStr);
-//                        UARTSend (statusStr);
-
-            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
-            UARTSend (statusStr);
-
-            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
-            UARTSend (statusStr);
+            usprintf (statusStr, "State: %4i \r\n", heli_state);
+                        UARTSend (statusStr);
             tx_counter = 0;
         }
 
