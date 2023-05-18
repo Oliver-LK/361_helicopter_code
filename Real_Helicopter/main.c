@@ -197,7 +197,7 @@ int main(void) {
                     //Sets calibrated
                      IntDisable(INT_GPIOC_TM4C123);
                      heli_state = FLYING;
-                     reset_yaw_incr(); //Resets the yaw increment to 0 for a new flight.
+                     reset_yaw_incr(); //Resets the yaw increment to 0 for a new flight.1
 
                  }
                 break;
