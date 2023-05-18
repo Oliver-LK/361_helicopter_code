@@ -173,7 +173,7 @@ int main(void) {
 
                 //In the landed state, the helicopter sets its desired position to the reference yaw, and minimum altitude
                 //It then switches its motors off.
-
+                reset_yaw_accum();
                 //Change state.
                 if (checkButton(SWITCH) == 1 && motor_off == 1) {
                     SysCtlDelay (3000000); //Delay to prevent instantaneous state change.
@@ -213,12 +213,6 @@ int main(void) {
                       heli_state = LANDING;
                 }
 
-                if (tx_counter > (TX_FREQ)) {
-
-                    usprintf (statusStr, "HI: %4i \r\n", 7);
-                    UARTSend (statusStr);
-                }
-
 
                 break;
 
@@ -231,6 +225,7 @@ int main(void) {
             }
 
             //Sets duty cycle of main and tail rotors to enable the heli to reach desired positions.
+
             alt_duty = alt_controller(desired_pos.alt, adc_av);
             yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
             setPWM_main(alt_duty);

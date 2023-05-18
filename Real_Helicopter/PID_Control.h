@@ -45,7 +45,7 @@ static int32_t alt_accumulated_error = 0;
 static int32_t pre_yaw_error[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
-#define YAW_T_MAX 3000
+#define YAW_T_MAX 2500
 
 void set_desired_pos(pos_t* desired_pos);
 
@@ -62,5 +62,7 @@ void reset_yaw_incr(void);
 int32_t return_prepre_yaw_error(void);
 
 void initialise_adc_offset (int32_t init_adc_off);
+
+void reset_yaw_accum(void);
 
 #endif //PID_CONTROL_H

@@ -17,7 +17,7 @@
 #include "UART.h"
 // Global Constants
 #define PWM_DUTY_MAX 70
-#define PWM_DUTY_MIN 20
+#define PWM_DUTY_MIN 10
 
 
 gains_t YAW_GAINS = {300, 000 ,4, -100};
@@ -139,7 +139,7 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
                 yaw_accumulated_error = 0;
     }
 
-    if (slow_tick > 1000) {
+    if (slow_tick > 800) {
 
         if (error > 0 && yaw_accumulated_error < YAW_T_MAX) {
             yaw_accumulated_error += error;
@@ -173,10 +173,6 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 
 
     last_desired_position = desired_position;
-
-
-
-
 
 
 //    if(error < 2 && error > -2) {
@@ -229,6 +225,9 @@ void reset_yaw_incr(void) {
     yaw_incr = 0;
 }
 
+void reset_yaw_accum(void) {
+    yaw_accumulated_error = 0;
+}
 //int32_t return_prepre_yaw_error(void){
 //    return pre_yaw_error[0];
 //}
