@@ -20,11 +20,11 @@
 
 
 // PID gains
-gains_t YAW_GAINS = {300, 500, 2, -100};
-gains_t ALT_GAINS = {10 , 0, 1, -100};
+gains_t YAW_GAINS = {80, 30, 1, -100};
+gains_t ALT_GAINS = {500 , 0, 5, -1000};
 
 static int32_t adc_offset = 0;
-
+static int32_t PWM_duty = 0;
 static int8_t yaw_incr = 0;
 
 void set_desired_pos(pos_t* desired_pos) {
@@ -71,13 +71,13 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
     // Altitude PI controller. Operates at approximately 10kHz
     gains_t gains = ALT_GAINS;
     static int16_t slow_tick = 0;
-    static uint16_t last_desired_position = 0;
+   // static int16_t slow_tick1 = 0;
+    //static uint16_t last_desired_position = 0;
 
     int32_t error =  desired_position - current_position;
 
     // PI equation based on error
-    int32_t PWM_duty = gains.Kp * error  + gains.Ki * alt_accumulated_error;// + gains.Kd * (error - pre_yaw_error); //Previous error will cause some trouble, so only have PI implemented at the moment.
-    PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
+    PWM_duty = (gains.Kp * error  + gains.Ki * alt_accumulated_error) / gains.divisor;// + gains.Kd * (error - pre_yaw_error); //Previous error will cause some trouble, so only have PI implemented at the moment.
 
     // PWM duty cycle limiter
     if(PWM_duty > MAIN_PWM_DUTY_MAX) {
@@ -87,29 +87,49 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
         PWM_duty = MAIN_PWM_DUTY_MIN; //Ensures the duty cycle does not drop below the minimum of PWM_DUTY_MIN.
     }
 
-    // Sets the accumulated integral error to zero when the desired postion changes.
-    if (desired_position != last_desired_position) {
-            alt_accumulated_error = 0;
-    }
+    // Sets the accumulated integral error to zero when the desired position changes.
+//    if (desired_position != last_desired_position) {
+//            alt_accumulated_error = 0;
+//    }
 
     // Integral error accumulator if conditions are met
-    if (slow_tick > ALT_I_SAMPLE_RATE && alt_accumulated_error < ALT_I_MAX && alt_accumulated_error > - ALT_I_MAX ) {
+    if (slow_tick > ALT_I_SAMPLE_RATE) {
+
+        if (error > 0 && alt_accumulated_error < ALT_T_MAX) {
             alt_accumulated_error += error;
-            slow_tick = 0;
+
+        } else if ( error < 0 && alt_accumulated_error > (-1 * ALT_T_MAX)) {
+            alt_accumulated_error += error;
+
+        }
+
+        slow_tick = 0;
     }
 
-    last_desired_position = desired_position;
+//    if(slow_tick1 > 10000) {
+//        slow_tick1 = 0;
+//        usprintf (statusStr, "============ \r\n"); // * usprintf
+//        UARTSend (statusStr);
+//        usprintf (statusStr, "Alt Error: %4i \r\n", error); // * usprintf
+//        UARTSend (statusStr);
+//        usprintf (statusStr, "Alt Desired: %4i \r\n", desired_position); // * usprintf
+//        UARTSend (statusStr);
+//        usprintf (statusStr, "Alt Current: %4i \r\n", current_position); // * usprintf
+//        UARTSend (statusStr);
+//        usprintf (statusStr, "Alt Duty: %4i \r\n", PWM_duty); // * usprintf
+//        UARTSend (statusStr);
+//        usprintf (statusStr, "Alt I: %4i \r\n", alt_accumulated_error); // * usprintf
+//        UARTSend (statusStr);
+////        usprintf (statusStr, "Alt D: %4i \r\n", derivative_error); // * usprintf
+////        UARTSend (statusStr);
+//
+//    }
 
-    //prev_yaw_error = error;
-    //alt_accumulated_error += error;
-
-    /*} else {
-
-        accumulated_error = 0; //If the desired position changes, the accumulated error is reset to combat integral windup.
-    }*/
-    //previous_desired_pos = desired_position;
+    //last_desired_position = desired_position;
 
     slow_tick++;
+//    slow_tick1++;
+
 
     return PWM_duty;
 }
@@ -127,7 +147,7 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 
     int32_t error =  desired_position - current_position;
    
-    // Optimisms the rotation direction
+    // Optimises the rotation direction
     if (error > HALF_YAW_CYCLE) {
         error -= FULL_YAW_CYCLE;
 
@@ -137,8 +157,8 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     //  Yaw PID calculation
-    int16_t yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor; //Previous error will cause some trouble, so only have PI implemented at the moment.
-
+    int16_t yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor;
+    yaw_PWM_duty += PWM_duty/ 2;
     // PWM duty cycle limiter
     if(yaw_PWM_duty > TAIL_PWM_DUTY_MAX) {
         yaw_PWM_duty = TAIL_PWM_DUTY_MAX; //Ensures the duty cycle does not exceed the maximum of PWM_DUTY_MAX.
@@ -175,27 +195,26 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
 
-    if(slow_tick1 > 10000) {
-        slow_tick1 = 0;
-        usprintf (statusStr, "============ \r\n"); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw Error: %4i \r\n", error); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw Desired: %4i \r\n", desired_position); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw Current: %4i \r\n", current_position); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw Duty: %4i \r\n", yaw_PWM_duty); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw I: %4i \r\n", yaw_accumulated_error); // * usprintf
-        UARTSend (statusStr);
-        usprintf (statusStr, "Yaw D: %4i \r\n",derivative_error); // * usprintf
-        UARTSend (statusStr);
+        if(slow_tick1 > 10000) {
+            slow_tick1 = 0;
+            usprintf (statusStr, "============ \r\n"); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Error: %4i \r\n", error); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Desired: %4i \r\n", desired_position); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Current: %4i \r\n", current_position); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw Duty: %4i \r\n", yaw_PWM_duty); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw I: %4i \r\n", yaw_accumulated_error); // * usprintf
+            UARTSend (statusStr);
+            usprintf (statusStr, "Yaw D: %4i \r\n", derivative_error); // * usprintf
+            UARTSend (statusStr);
 
-    }
-
+        }
+        slow_tick1++;
     slow_tick++;
-    slow_tick1++;
     slow_tick2++;
 
     return yaw_PWM_duty;

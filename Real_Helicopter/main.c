@@ -42,7 +42,7 @@
 #define YAW_CALIBRATION_DUTY 60                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point. 
 #define ALT_CALIBRATION_DUTY 35                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point.
 #define SYS_DELAY 3000000
-#define HOVER_HEIGHT 20
+#define HOVER_HEIGHT 30
 //char statusStr[MAX_STR_LEN + 1];
 
 
@@ -230,7 +230,7 @@ int main(void) {
             //In the LANDING state, the helicopter rotates to the reference yaw and 0 altitude, before switching the motors off when it hits the ground. 
 
             desired_pos.yaw = 0; 
-            desired_pos.alt = ADC_offset - 10 * HOVER_HEIGHT; //Waits above the ground for the yaw to reach 0. 
+            desired_pos.alt = ADC_offset - 5 * HOVER_HEIGHT; //Waits above the ground for the yaw to reach 0.
 
             if(get_yaw_counter() == 0 ) {
                 desired_pos.alt = ADC_offset - 2 * HOVER_HEIGHT;
@@ -243,7 +243,7 @@ int main(void) {
             setPWM_tail(yaw_duty);
 
 
-            if((get_yaw_counter() == 0) && (adc_av > ADC_offset - 3 * HOVER_HEIGHT) ) {
+            if((get_yaw_counter() == 0) && (adc_av > ADC_offset - 4 * HOVER_HEIGHT) ) {
                 //If the helicopter has made it to the reference yaw and minimum altitude, switch the motors off and change state.
                 setPWM_main(0);
                 setPWM_tail(0);
@@ -304,8 +304,8 @@ int main(void) {
 ////            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
 ////            UARTSend (statusStr);
 //
-            usprintf (statusStr, "State: %4i \r\n", heli_state);
-                        UARTSend (statusStr);
+//            usprintf (statusStr, "State: %4i \r\n", heli_state);
+//                        UARTSend (statusStr);
 //
 ////            usprintf (statusStr, "D_yaw: %4i \r\n", return_prepre_yaw_error());
 ////            UARTSend (statusStr);

@@ -158,7 +158,7 @@ void abs_yaw_ISR(void)
 
 }
 
-bool get_calibration(void) 
+bool is_calibrated(void)
 {
     // returns true if calibration sequence is complete
     return calibration_complete;

@@ -57,7 +57,7 @@ void init_yaw_ISR(void);
 void abs_yaw_ISR(void);
 // Single time interrupt that finds sets the 0 postion for yaw
 
-bool get_calibration(void);
+bool is_calibrated(void);
 // Returns true if calibration is complete
 
 int8_t return_state(void);

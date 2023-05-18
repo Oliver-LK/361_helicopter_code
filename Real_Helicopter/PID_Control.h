@@ -20,10 +20,10 @@
 #include "inc/hw_memmap.h"
 
 // Global constants
-#define TAIL_PWM_DUTY_MAX 65
+#define TAIL_PWM_DUTY_MAX 50
 #define TAIL_PWM_DUTY_MIN 13
 
-#define MAIN_PWM_DUTY_MAX 70
+#define MAIN_PWM_DUTY_MAX 68
 #define MAIN_PWM_DUTY_MIN 15
 
 #define ADC_HOVER_OFFSET 50
@@ -34,6 +34,7 @@
 
 #define ALT_I_MAX 5000
 #define ALT_I_SAMPLE_RATE 1000
+#define ALT_T_MAX 9000
 
 #define YAW_I_SAMPLE_RATE 500
 #define YAW_D_SAMPLE_RATE 3000
