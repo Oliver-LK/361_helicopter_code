@@ -163,6 +163,7 @@ void abs_yaw_ISR(void) {
     yaw_counter = 0;
     GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
     calibration_complete = 1;
+//    IntDisable(INT_GPIOC_TM4C123);
 
 }
 

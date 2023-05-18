@@ -17,6 +17,7 @@
 
 // Modules and drivers
 #include "altitude.h"
+#include "inc/hw_memmap.h"
 
 typedef struct {
     int32_t alt;
@@ -33,11 +34,16 @@ typedef struct {
 
 } gains_t;
 
+#define MAX_STR_LEN 16
+char statusStr[MAX_STR_LEN + 1];
 
 #define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 
 static int32_t yaw_accumulated_error = 0;
 static int32_t alt_accumulated_error = 0;
+
+static int32_t pre_yaw_error[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
 #define YAW_T_MAX 4000
 
@@ -52,5 +58,9 @@ int32_t return_iyaw_error(void);
 int32_t return_ialt_error(void);
 
 void reset_yaw_incr(void);
+
+int32_t return_prepre_yaw_error(void);
+
+void initialise_adc_offset (int32_t init_adc_off);
 
 #endif //PID_CONTROL_H
