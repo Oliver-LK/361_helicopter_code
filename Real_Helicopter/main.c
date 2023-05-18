@@ -44,7 +44,7 @@
 
 
 #define YAW_CALIBRATION_DUTY 60
-#define ALT_CALIBRATION_DUTY 40
+#define ALT_CALIBRATION_DUTY 35
 
 //#define MAX_STR_LEN 16
 //
@@ -220,6 +220,7 @@ int main(void) {
 
 
             desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
+            desired_pos.alt = ADC_offset - 500;
             if(get_yaw_counter() == 0 ) {
                 desired_pos.alt = ADC_offset - 50; // Causes the PID controller to aim for the minimum altitude after desired yaw has been reached.
             }

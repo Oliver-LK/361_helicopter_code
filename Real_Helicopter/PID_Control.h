@@ -40,12 +40,14 @@ char statusStr[MAX_STR_LEN + 1];
 #define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 
 static int32_t yaw_accumulated_error = 0;
+static int32_t yaw_prev_pos = 0;
 static int32_t alt_accumulated_error = 0;
+static int16_t derivative_error = 0;
 
 static int32_t pre_yaw_error[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
-#define YAW_T_MAX 2500
+#define YAW_T_MAX 2700
 
 void set_desired_pos(pos_t* desired_pos);
 
