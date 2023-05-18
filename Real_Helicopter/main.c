@@ -42,6 +42,7 @@
 #define YAW_CALIBRATION_DUTY 60                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point. 
 #define ALT_CALIBRATION_DUTY 35                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point.
 #define SYS_DELAY 3000000
+#define HOVER_HEIGHT 20
 //char statusStr[MAX_STR_LEN + 1];
 
 
@@ -161,31 +162,28 @@ int main(void) {
     //Delays the system to allow the circular buffer to fill up.
     SysCtlDelay (SYS_DELAY); 
     
-    //ADC_offset 
+    //ADC_offset represents the ground value, which is the initial value measured by the ADC. 
     uint16_t ADC_offset = give_adc_av(); 
+    initialise_adc_offset(ADC_offset); //Sends ADC offset to the PID module. 
 
-
-    pos_t desired_pos = {ADC_offset, 0 };
-    initialise_adc_offset(ADC_offset);
-
-
-
-
+    //Sets the initial desired position for the controller to be 1% altitude and the initial yaw to be 0. 
+    pos_t desired_pos = {ADC_offset - HOVER_HEIGHT, 0 };
+    
 
     while (1)
     {
-        // Calculate and display the rounded mean of the buffer contents
-
-
+        //Finite state machine. 
         switch(heli_state) {
 
             case LANDED:
 
-                //In the landed state, the helicopter sets its desired position to the reference yaw, and minimum altitude
-                //It then switches its motors off.
+                //In the LANDED state, the helicopter waits for the switch to be set high, indicating the helicopter can take off. 
+                //It also resets any accumulated error which may have wound up in the yaw controller's integral control. 
+
                 reset_yaw_accum();
-                //Change state.
+                
                 if (checkButton(SWITCH) == 1 && motor_off == 1) {
+                    //Change state if the motors are off and the switch is set to high. 
                     SysCtlDelay (SYS_DELAY); //Delay to prevent instantaneous state change.
                     heli_state = TAKEOFF;
                 }
@@ -193,61 +191,60 @@ int main(void) {
 
             case TAKEOFF:
 
+                //In the TAKEOFF state, the helicopter either calibrates the yaw if this has not been done, or skips this step if taking off for the second time in a session. 
+
                 motor_off = 0; // Motors are now on and will need to be turned off to land.
 
+                if(is_calibrated() == 0) {
 
-                if(get_calibration() == 0) {
-                    desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
-                    setPWM_main(ALT_CALIBRATION_DUTY);
+                    //Sets the height and yaw for the calibration state. 
+                    setPWM_main(ALT_CALIBRATION_DUTY);      
                     setPWM_tail(YAW_CALIBRATION_DUTY);
 
-                }
-
-                if(get_calibration() == 1) {
-                    //Sets calibrated
+                } else {
+                    //Disables the reference yaw interrupt and changes state. 
                      IntDisable(INT_GPIOC_TM4C123);
                      heli_state = FLYING;
-                     reset_yaw_incr(); //Resets the yaw increment to 0 for a new flight.1
+                     reset_yaw_incr(); //Resets the desired yaw counter to 0 for a new flight.
 
                  }
                 break;
 
             case FLYING:
 
+                //In the FLYING state, the helicopter responds to button commands and uses the controllers for the yaw and altitude to attain the desired positions. 
+
                 set_desired_pos(&desired_pos);
                 alt_duty = alt_controller(desired_pos.alt, adc_av);
                 yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
                 setPWM_main(alt_duty);
                 setPWM_tail(yaw_duty);
+
+                //If landing switch is set to low, change state. 
                 if (checkButton(SWITCH) == 0) {
                       heli_state = LANDING;
                 }
-
-
                 break;
 
             case LANDING:
+            //In the LANDING state, the helicopter rotates to the reference yaw and 0 altitude, before switching the motors off when it hits the ground. 
 
+            desired_pos.yaw = 0; 
+            desired_pos.alt = ADC_offset - 10 * HOVER_HEIGHT; //Waits above the ground for the yaw to reach 0. 
 
-            desired_pos.yaw = 0; //Causes the helicopter's PID controller to rotate to the reference yaw.
-            desired_pos.alt = ADC_offset - 500;
             if(get_yaw_counter() == 0 ) {
-                desired_pos.alt = ADC_offset - 50; // Causes the PID controller to aim for the minimum altitude after desired yaw has been reached.
+                desired_pos.alt = ADC_offset - 2 * HOVER_HEIGHT;
             }
 
             //Sets duty cycle of main and tail rotors to enable the heli to reach desired positions.
-
             alt_duty = alt_controller(desired_pos.alt, adc_av);
             yaw_duty = yaw_controller(desired_pos.yaw, get_yaw_counter());
             setPWM_main(alt_duty);
             setPWM_tail(yaw_duty);
 
 
-            //THE FOLLOWING CODE BREAKS IF THE SPEED IS TOO HIGH. DERIVATIVE CONTROL MAY BE NEEDED.
-//**********************************************************************************************************************
-            if((get_yaw_counter() == 0) && (adc_av > ADC_offset -70) ) {
-                //If the helicopter has made it to the reference yaw and minimum altitude, switch the motors off.
-
+            if((get_yaw_counter() == 0) && (adc_av > ADC_offset - 3 * HOVER_HEIGHT) ) {
+                //If the helicopter has made it to the reference yaw and minimum altitude, switch the motors off and change state.
                 setPWM_main(0);
                 setPWM_tail(0);
                 motor_off = 1;
@@ -256,28 +253,30 @@ int main(void) {
             break;
         }
 
+
+
+        //Calculates the altitude using the values stored in the circular buffer.
         adc_av =  give_adc_av();
         alt_percentage = give_adc_percent(adc_av, ADC_offset);
 
 
-
-
+        //Timers for low-priority tasks. 
 
         if (button_counter > (BUTTON_FREQ)) {
+            //Poll buttons
             updateButtons();
             button_counter = 0;
         }
 
 
         if (display_counter > (DISPLAY_FREQ)) {
-            displayPos(alt_percentage, get_yaw(), yaw_decimal()); // Displays the helicopter's position.
+            // Displays the helicopter's position.
+            displayPos(alt_percentage, get_yaw(), yaw_decimal()); 
             display_counter = 0;
 
         }
 
         if (tx_counter > (TX_FREQ)) {
-
-
         // Form and send a status message to the console
 
         //            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf

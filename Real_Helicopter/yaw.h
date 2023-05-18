@@ -47,7 +47,7 @@ void init_yaw_ISR(void);
 //
 void abs_yaw_ISR(void);
 
-bool get_calibration(void);
+bool is_calibrated(void);
 
 static int8_t state;
 
