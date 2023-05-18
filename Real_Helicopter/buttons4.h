@@ -9,8 +9,8 @@
 // The buttons are:  UP and DOWN (on the Orbit daughterboard) plus
 // LEFT and RIGHT on the Tiva.
 //
-// P.J. Bones UCECEj
-// Last modified:  7.2.2018
+// Ben Stirling and Oliver Clements, based on code by P.J. Bones UCECE
+// Last modified:  18/5/23
 // 
 // *******************************************************
 
@@ -42,7 +42,7 @@ enum butStates {RELEASED = 0, PUSHED, NO_CHANGE};
 #define RIGHT_BUT_PORT_BASE  GPIO_PORTF_BASE
 #define RIGHT_BUT_PIN  GPIO_PIN_0
 #define RIGHT_BUT_NORMAL  true
-// Switch definition
+// Left Switch definition
 #define SWITCH_PERIPH  SYSCTL_PERIPH_GPIOA
 #define SWITCH_PORT_BASE  GPIO_PORTA_BASE
 #define SWITCH_PIN  GPIO_PIN_7
