@@ -103,7 +103,7 @@ void SysTickIntHandler(void)
     //Incrementing counters. 
     display_counter++;
     button_counter++;
-//    tx_counter++;
+    tx_counter++;
 
 }
 
@@ -291,11 +291,11 @@ int main(void) {
             reset = 1;
         }
 
-//        if (tx_counter > (TX_FREQ)) {
-//        // Form and send a status message to the console
-//            UART_transmit(heli_state, get_alt_PWM(), get_yaw_PWM(), alt_percentage, get_yaw());
-//            tx_counter = 0;
-//        }
+        if (tx_counter > (TX_FREQ)) {
+        // Form and send a status message to the console
+            UART_transmit(heli_state, get_alt_PWM(), get_yaw_PWM(), alt_percentage, get_yaw());
+            tx_counter = 0;
+        }
 
     }
 

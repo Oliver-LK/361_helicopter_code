@@ -41,7 +41,7 @@ void initialiseUSB_UART (void);
 void UARTSend (char *pucBuffer);
 //Sends a message over UART to the host computer.
 
-void UART_transmit(uint8_t heli_state, int32_t alt_PWM, int32_t yaw_PWM, int32_t alt, int32_t yaw);
+void UART_transmit(uint8_t heli_state, uint8_t alt_PWM, uint8_t yaw_PWM, int16_t alt, int16_t yaw);
 
 #endif
 
