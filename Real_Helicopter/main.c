@@ -199,6 +199,7 @@ int main(void) {
 
                  }
                 break;
+
             case FLYING:
 
                 set_desired_pos(&desired_pos);
@@ -209,6 +210,13 @@ int main(void) {
                 if (checkButton(SWITCH) == 0) {
                       heli_state = LANDING;
                 }
+
+                if (tx_counter > (TX_FREQ)) {
+
+                    usprintf (statusStr, "HI: %4i \r\n", 7);
+                    UARTSend (statusStr);
+                }
+
 
                 break;
 

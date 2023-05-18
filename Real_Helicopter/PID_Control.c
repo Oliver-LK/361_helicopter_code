@@ -140,11 +140,18 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     if (slow_tick > 1000) {
-        if(yaw_accumulated_error < YAW_T_MAX && yaw_accumulated_error > -YAW_T_MAX ) {
-        yaw_accumulated_error += error;
-        slow_tick = 0;
+
+        if (error > 0 && yaw_accumulated_error < YAW_T_MAX) {
+            yaw_accumulated_error += error;
+
+        } else if ( error < 0 && yaw_accumulated_error > (-1 * YAW_T_MAX)) {
+            yaw_accumulated_error += error;
 
         }
+
+
+        slow_tick = 0;
+    }
 
     if(slow_tick1 > 10000) {
         slow_tick1 = 0;
@@ -163,7 +170,6 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 
 
         }
-    }
 
 
     last_desired_position = desired_position;

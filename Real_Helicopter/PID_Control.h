@@ -45,7 +45,7 @@ static int32_t alt_accumulated_error = 0;
 static int32_t pre_yaw_error[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
-#define YAW_T_MAX 4000
+#define YAW_T_MAX 3000
 
 void set_desired_pos(pos_t* desired_pos);
 
