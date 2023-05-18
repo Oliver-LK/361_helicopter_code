@@ -31,12 +31,17 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#define MAX_STR_LEN 16
+char statusStr[MAX_STR_LEN + 1];
+
 // Function decelerations
 void initialiseUSB_UART (void);
 //Initialises the UART modules per the #defines.
 
 void UARTSend (char *pucBuffer);
 //Sends a message over UART to the host computer.
+
+void UART_transmit(uint8_t heli_state, int32_t alt_PWM, int32_t yaw_PWM, int32_t alt, int32_t yaw);
 
 #endif
 

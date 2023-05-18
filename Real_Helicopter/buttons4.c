@@ -75,11 +75,18 @@ initButtons (void)
     but_normal[RIGHT] = RIGHT_BUT_NORMAL;
 
     //Left switch PA7 
-    SysCtlPeripheralEnable (SWITCH_PERIPH);
-    GPIOPinTypeGPIOInput (SWITCH_PORT_BASE, SWITCH_PIN);
-    GPIOPadConfigSet (SWITCH_PORT_BASE, SWITCH_PIN, GPIO_STRENGTH_2MA,
+    SysCtlPeripheralEnable (L_SWITCH_PERIPH);
+    GPIOPinTypeGPIOInput (L_SWITCH_PORT_BASE, L_SWITCH_PIN);
+    GPIOPadConfigSet (L_SWITCH_PORT_BASE, L_SWITCH_PIN, GPIO_STRENGTH_2MA,
                       GPIO_PIN_TYPE_STD_WPD);
-     but_normal[UP] = SWITCH_NORMAL;
+     but_normal[UP] = L_SWITCH_NORMAL;
+
+     //Right switch PA6
+     SysCtlPeripheralEnable (R_SWITCH_PERIPH);
+     GPIOPinTypeGPIOInput (R_SWITCH_PORT_BASE, R_SWITCH_PIN);
+     GPIOPadConfigSet (R_SWITCH_PORT_BASE, R_SWITCH_PIN, GPIO_STRENGTH_2MA,
+                       GPIO_PIN_TYPE_STD_WPD);
+      but_normal[UP] = R_SWITCH_NORMAL;
 
 	for (i = 0; i < NUM_BUTS; i++)
 	{
@@ -111,7 +118,7 @@ updateButtons (void)
 	but_value[DOWN] = (GPIOPinRead (DOWN_BUT_PORT_BASE, DOWN_BUT_PIN) == DOWN_BUT_PIN);
     but_value[LEFT] = (GPIOPinRead (LEFT_BUT_PORT_BASE, LEFT_BUT_PIN) == LEFT_BUT_PIN);
     but_value[RIGHT] = (GPIOPinRead (RIGHT_BUT_PORT_BASE, RIGHT_BUT_PIN) == RIGHT_BUT_PIN);
-    but_value[SWITCH] = (GPIOPinRead (SWITCH_PORT_BASE, SWITCH_PIN) == SWITCH_PIN);
+    but_value[L_SWITCH] = (GPIOPinRead (L_SWITCH_PORT_BASE, L_SWITCH_PIN) == L_SWITCH_PIN);
 	// Iterate through the buttons, updating button variables as required
 	for (i = 0; i < NUM_BUTS; i++)
 	{

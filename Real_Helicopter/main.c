@@ -35,15 +35,15 @@
 
 //Global constant declarations
 #define SYSTEM_FREQ_COUNTER 100                     // Systick and other systems are updated at 100 Hz, and this serves as a counter for the timing based scheduler. 
-#define MAX_STR_LEN 16                              // Maximum string length which can be transmitted in one serial command. 
+                              // Maximum string length which can be transmitted in one serial command.
 #define DISPLAY_FREQ (SYSTEM_FREQ_COUNTER / 4)      //The display updates at 4 Hz. 
 #define BUTTON_FREQ  (SYSTEM_FREQ_COUNTER / 100)    //The buttons are polled at 100 Hz
 #define TX_FREQ (SYSTEM_FREQ_COUNTER / 4)           //Serial commands are sent at 4 Hz. 
 #define YAW_CALIBRATION_DUTY 60                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point. 
-#define ALT_CALIBRATION_DUTY 35                     // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point.
+#define ALT_CALIBRATION_DUTY 30                   // Duty cycle for yaw while the helicopter is calibrating and trying to find the yaw reference point.
 #define SYS_DELAY 3000000
 #define HOVER_HEIGHT 30
-//char statusStr[MAX_STR_LEN + 1];
+
 
 
 
@@ -103,7 +103,7 @@ void SysTickIntHandler(void)
     //Incrementing counters. 
     display_counter++;
     button_counter++;
-    tx_counter++;
+//    tx_counter++;
 
 }
 
@@ -144,6 +144,7 @@ int main(void) {
     bool motor_off = 1;             //States the motors are off. 
     int32_t adc_av = 0;             //Defines the average value received from the ADC. 
     int32_t alt_percentage = 0;     //The altitude, measured in percent. 
+    bool reset = 0;
 
     //Initialise counters for timing-based scheduler. 
     display_counter = 0;
@@ -172,6 +173,7 @@ int main(void) {
 
     while (1)
     {
+
         //Finite state machine. 
         switch(heli_state) {
 
@@ -182,7 +184,7 @@ int main(void) {
 
                 reset_yaw_accum();
                 
-                if (checkButton(SWITCH) == 1 && motor_off == 1) {
+                if (checkButton(L_SWITCH) == 1 && motor_off == 1) {
                     //Change state if the motors are off and the switch is set to high. 
                     SysCtlDelay (SYS_DELAY); //Delay to prevent instantaneous state change.
                     heli_state = TAKEOFF;
@@ -221,7 +223,7 @@ int main(void) {
                 setPWM_tail(yaw_duty);
 
                 //If landing switch is set to low, change state. 
-                if (checkButton(SWITCH) == 0) {
+                if (checkButton(L_SWITCH) == 0) {
                       heli_state = LANDING;
                 }
                 break;
@@ -271,46 +273,29 @@ int main(void) {
 
         if (display_counter > (DISPLAY_FREQ)) {
             // Displays the helicopter's position.
-            displayPos(alt_percentage, get_yaw(), yaw_decimal()); 
+            if (heli_state != TAKEOFF) {
+                displayPos(alt_percentage, get_yaw(), yaw_decimal(), get_alt_PWM(), get_yaw_PWM());
+
+            } else {
+                displayPos(alt_percentage, get_yaw(), yaw_decimal(), ALT_CALIBRATION_DUTY, YAW_CALIBRATION_DUTY);
+
+            }
+
             display_counter = 0;
 
         }
 
-        if (tx_counter > (TX_FREQ)) {
-        // Form and send a status message to the console
 
-        //            usprintf (statusStr, "Yaw Duty: %4i \r\n",yaw_duty); // * usprintf
-        //            UARTSend (statusStr);
-        //            usprintf (statusStr, "Alt Duty: %4i \r\n",alt_duty ); // * usprintf
-//        //            UARTSend (statusStr);
-//        //            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
-//
-////            usprintf (statusStr, "============ \r\n"); // * usprintf
-////
-////            UARTSend (statusStr);
-////            usprintf (statusStr, "Yaw I error: %4i \r\n", return_iyaw_error()); // * usprintf
-////
-////            UARTSend (statusStr);
-//            usprintf (statusStr, "Yaw Error: %4i \r\n",desired_pos.yaw - get_yaw_counter()); // * usprintf
-//            UARTSend (statusStr);
-////
-//////            usprintf (statusStr, "PID Yaw Error: %4i \r\n", return_yaw_error()); // * usprintf
-//////                                    UARTSend (statusStr);
-//////                        UARTSend (statusStr);
-////
-//            usprintf (statusStr, "Alt Error: %4i \r\n",adc_av - desired_pos.alt); // * usprintf
-//            UARTSend (statusStr);
-////
-////            usprintf (statusStr, "Alt I error: %4i \r\n", return_ialt_error());
-////            UARTSend (statusStr);
-//
-//            usprintf (statusStr, "State: %4i \r\n", heli_state);
-//                        UARTSend (statusStr);
-//
-////            usprintf (statusStr, "D_yaw: %4i \r\n", return_prepre_yaw_error());
-////            UARTSend (statusStr);
-            tx_counter = 0;
+        if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6) >= 1 && reset == 0) {
+            SysCtlReset();
+            reset = 1;
         }
+
+//        if (tx_counter > (TX_FREQ)) {
+//        // Form and send a status message to the console
+//            UART_transmit(heli_state, get_alt_PWM(), get_yaw_PWM(), alt_percentage, get_yaw());
+//            tx_counter = 0;
+//        }
 
     }
 

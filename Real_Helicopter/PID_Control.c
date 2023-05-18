@@ -20,11 +20,11 @@
 
 
 // PID gains
-gains_t YAW_GAINS = {80, 30, 1, -100};
+gains_t YAW_GAINS = {90, 200, 1, -100};
 gains_t ALT_GAINS = {500 , 0, 5, -1000};
 
 static int32_t adc_offset = 0;
-static int32_t PWM_duty = 0;
+
 static int8_t yaw_incr = 0;
 
 void set_desired_pos(pos_t* desired_pos) {
@@ -157,7 +157,7 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
     }
 
     //  Yaw PID calculation
-    int16_t yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor;
+    yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor;
     yaw_PWM_duty += PWM_duty/ 2;
     // PWM duty cycle limiter
     if(yaw_PWM_duty > TAIL_PWM_DUTY_MAX) {
@@ -219,6 +219,21 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 
     return yaw_PWM_duty;
 }
+
+
+
+int32_t get_yaw_PWM(void)
+{
+    return yaw_PWM_duty;
+}
+
+
+int32_t get_alt_PWM(void)
+{
+    return PWM_duty;
+}
+
+
 
 // Debugging functions
 int32_t return_iyaw_error(void){

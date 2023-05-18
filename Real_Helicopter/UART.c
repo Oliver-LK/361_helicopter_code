@@ -89,3 +89,37 @@ UARTSend (char *pucBuffer)
         pucBuffer++;
     }
 }
+
+void UART_transmit(uint8_t heli_state, uint8_t alt_PWM, uint8_t yaw_PWM, int16_t alt, int16_t yaw))
+
+{
+
+    usprintf (statusStr, "============ \r\n"); // * usprintf
+    UARTSend (statusStr);
+    usprintf (statusStr, "Alt: %4i \r\n", alt); // * usprintf
+    UARTSend (statusStr);
+    usprintf (statusStr, "Yaw: %4i \r\n", yaw); // * usprintf
+    UARTSend (statusStr);
+    usprintf (statusStr, "Alt Duty: %4i \r\n", alt_PWM); // * usprintf
+    UARTSend (statusStr);
+    usprintf (statusStr, "Yaw Duty: %4i \r\n", yaw_PWM); // * usprintf
+    UARTSend (statusStr);
+
+    if (state == 0) {
+        usprintf (statusStr, "State: Landed \r\n"); // * usprintf
+        UARTSend (statusStr);
+
+    } else if(state == 1) {
+        usprintf (statusStr, "State: Take off \r\n"); // * usprintf
+        UARTSend (statusStr);
+
+    } else if(state == 2) {
+        usprintf (statusStr, "State: Flying \r\n"); // * usprintf
+        UARTSend (statusStr);
+
+    } else if (state == 3) {
+        usprintf (statusStr, "State: Landing \r\n"); // * usprintf
+        UARTSend (statusStr);
+    }
+
+}

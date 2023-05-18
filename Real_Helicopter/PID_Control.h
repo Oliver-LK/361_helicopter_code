@@ -72,7 +72,8 @@ typedef struct {
 char statusStr[MAX_STR_LEN + 1];
 // UART string for send
 
-
+static int32_t PWM_duty = 0;
+static int32_t yaw_PWM_duty = 0;
 static int32_t yaw_accumulated_error = 0;
 static int32_t yaw_prev_pos = 0;
 static int32_t alt_accumulated_error = 0;
@@ -88,6 +89,12 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position);
 
 int16_t yaw_controller(int32_t desired_position, int32_t current_position);
 // PID controller for the yaw of the helicopter
+
+int32_t get_yaw_PWM(void);
+
+int32_t get_alt_PWM(void);
+
+//OH GOD DELETE THIS BEFORE SAM FINDS IT
 
 // Debugging functions
 int32_t return_iyaw_error(void);
@@ -107,5 +114,7 @@ void initialise_adc_offset (int32_t init_adc_off);
 
 void reset_yaw_accum(void);
 // Force resets the integral build up from the yaw controller
+
+
 
 #endif //PID_CONTROL_H

@@ -32,23 +32,26 @@ void initDisplay (void)
 
 
 // Displays the helicopter positional information on the tiva display
-void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal)
+void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal, int32_t alt_PWM, int32_t yaw_PWM)
 {
     char string[17];  // 16 characters across the display
 
-    OLEDStringDraw ("Heli Position", 0, 0);
-
     // Form a new string for the line.  The maximum width specified for the
     //  number field ensures it is displayed right justified.
-    usnprintf (string, sizeof(string), "Alt(%%) %8d", alt_percentage);
+    usnprintf (string, sizeof(string), "Alt(%%) %7d", alt_percentage);
     // Update line on display.
-    OLEDStringDraw (string, 0, 1);
+    OLEDStringDraw (string, 0, 0);
+
+    usnprintf (string, sizeof(string), "Alt PWM (%%) %2d", alt_PWM);
+    OLEDStringDraw (string, 0, 1); //Places the line on the 3rd line of the module.
 
     usnprintf (string, sizeof(string), "Yaw(deg) %5d.%d", yaw_int, yaw_decimal);
     //The yaw angle is split into an integer component and a decimal component which are concatenated to display a float-like number.
+    OLEDStringDraw (string, 0, 2); //Places the line on the 3rd line of the module.
 
-
+    usnprintf (string, sizeof(string), "Yaw PWM (%%) %2d", yaw_PWM);
     OLEDStringDraw (string, 0, 3); //Places the line on the 3rd line of the module.
+
 
 }
 
