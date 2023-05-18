@@ -1,5 +1,5 @@
 // ***********************************************************
-// AUTHOR        : Ben Stirling and Oliver Clements 
+// AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones. 
 // CREATE DATE   : 7/3/2023
 // PURPOSE       : ADC handler 
 //                 
@@ -14,7 +14,6 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"
-#include "driverlib/pwm.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -22,13 +21,10 @@
 #include "driverlib/debug.h"
 #include "utils/ustdlib.h"
 #include "circBufT.h"
-#include "OrbitOLED/OrbitOLEDInterface.h"
 #include "ADC.h"
-#include "display.h"
 
 
-
-// The handler for the ADC conversion complete interrupt.
+// The handler for the "ADC conversion complete" interrupt.
 // Writes to the circular buffer.
 void ADCIntHandler(void)
 {

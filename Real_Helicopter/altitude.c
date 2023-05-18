@@ -1,5 +1,5 @@
 // ***********************************************************
-// AUTHOR        : Ben Stirling and Oliver Clements
+// AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones. 
 // CREATE DATE   : 17/4/2023
 // PURPOSE       : Altitude module
 //
@@ -14,22 +14,13 @@
 // Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "driverlib/adc.h"
-#include "driverlib/pwm.h"
-#include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/debug.h"
 #include "utils/ustdlib.h"
 #include "circBufT.h"
-#include "ADC.h"
-#include "buttons4.h"
 #include "altitude.h"
-
-// Global Constants
-#define ADC_range (ALT_MIN - ALT_MAX)
-
 
 
 int32_t give_adc_av(void)
@@ -46,17 +37,6 @@ int32_t give_adc_av(void)
 
     return adc_av;
 }
-
-/*
-int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset)
-{
-
-    int32_t percentage = ((ADC_offset - adc_av )*100/ADC_range);
-
-    return percentage;
-
-}
-*/
 
 int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset)
 {

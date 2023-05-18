@@ -10,8 +10,8 @@
 // Note that pin PF0 (the pin for the RIGHT pushbutton - SW2 on
 //  the Tiva board) needs special treatment - See PhilsNotesOnTiva.rtf.
 //
-// P.J. Bones UCECE
-// Last modified:  7.2.2018
+// Ben Stirling and Oliver Clements, based on code by P.J. Bones UCECE
+// Last modified:  18/5/23
 // 
 // *******************************************************
 
@@ -74,7 +74,7 @@ initButtons (void)
        GPIO_PIN_TYPE_STD_WPU);
     but_normal[RIGHT] = RIGHT_BUT_NORMAL;
 
-    //Switch PA7
+    //Left switch PA7 
     SysCtlPeripheralEnable (SWITCH_PERIPH);
     GPIOPinTypeGPIOInput (SWITCH_PORT_BASE, SWITCH_PIN);
     GPIOPadConfigSet (SWITCH_PORT_BASE, SWITCH_PIN, GPIO_STRENGTH_2MA,
