@@ -44,6 +44,7 @@
 
 
 #define YAW_CALIBRATION_DUTY 60
+#define ALT_CALIBRATION_DUTY 40
 
 //#define MAX_STR_LEN 16
 //
@@ -159,6 +160,8 @@ int main(void) {
 
 
 
+
+
     while (1)
     {
         // Calculate and display the rounded mean of the buffer contents
@@ -185,8 +188,7 @@ int main(void) {
 
                 if(get_calibration() == 0) {
                     desired_pos.alt = ADC_offset -20 ; //Sets the hover height.
-                    alt_duty = alt_controller(desired_pos.alt, adc_av);
-                    setPWM_main(alt_duty);
+                    setPWM_main(ALT_CALIBRATION_DUTY);
                     setPWM_tail(YAW_CALIBRATION_DUTY);
 
                 }
