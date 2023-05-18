@@ -1,3 +1,7 @@
+#ifndef YAW_H
+#define YAW_H
+
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 04/05/2023
@@ -5,8 +9,6 @@
 //
 // ***********************************************************
 
-#ifndef YAW_H
-#define YAW_H
 
 // Libraries
 #include <stdint.h>
@@ -29,30 +31,36 @@
 #include "ADC.h"
 #include "buttons4.h"
 
+// Global variables
+static int8_t state;
+static bool calibration_complete = 0;
+
+// Function decelerations
 void yaw_ISR(void);
-//ISR to increment/decrement yaw_counter which keeps track of the rotation of the helicopter.
+// ISR to increment/decrement yaw_counter which keeps track of the rotation of the helicopter.
 
 int32_t get_yaw(void);
-//Returns the yaw (in degree form) of the helicopter for displaying the yaw. This avoids global variable use.
+// Returns the yaw (in degree form) of the helicopter for displaying the yaw. This avoids global variable use.
 
 int8_t yaw_decimal(void);
-//Calculates the decimal part of the yaw position.
+// Calculates the decimal part of the yaw position.
 
 int32_t get_yaw_counter(void);
-//returns the yaw counter variable.
+// returns the yaw counter variable.
+
 void init_abs_yaw_ISR(void);
+// Interrupt initialisation for yaw 0 set point
 
 void init_yaw_ISR(void);
-//  Interrupt initialisation for yaw monitoring.
-//
+// Interrupt initialisation for yaw positions monitoring.
+
 void abs_yaw_ISR(void);
+// Single time interrupt that finds sets the 0 postion for yaw
 
 bool get_calibration(void);
-
-static int8_t state;
+// Returns true if calibration is complete
 
 int8_t return_state(void);
-
-static bool calibration_complete = 0;
+// Returns the state of the helicopter.
 
 #endif

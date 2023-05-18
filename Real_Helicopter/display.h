@@ -37,5 +37,4 @@ void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal);
 //Displays all of the helicopter positional data, where the altitude is a percentage with 0% at a 2V input and 100% at a 1V input.
 //The yaw angle is split into an integer component and a decimal component which are concatenated to display a float-like number.
 
-*/
 #endif

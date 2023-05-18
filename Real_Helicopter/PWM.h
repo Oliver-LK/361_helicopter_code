@@ -1,3 +1,6 @@
+#ifndef PWM_H
+#define PWM_H
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
@@ -61,8 +64,14 @@
 #define PWM_TAIL_GPIO_CONFIG GPIO_PF1_M1PWM5
 #define PWM_TAIL_GPIO_PIN    GPIO_PIN_1
 
+// Function decelerations
 void initialisePWM (void);
+// Initiation of PWM hardware
 
 void setPWM_main (uint32_t main_duty);
+// PWM generator for main rotor
 
 void setPWM_tail (uint32_t tail_duty);
+// PWM generator for tail rotor
+
+#endif

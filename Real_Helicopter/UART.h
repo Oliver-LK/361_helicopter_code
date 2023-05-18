@@ -1,3 +1,6 @@
+#ifndef UART_H
+#define UART_H
+
 //********************************************************
 //
 // UART.h - derived from uartDemo.c by Prof. Phil Bones.
@@ -8,12 +11,13 @@
 // Last modified:   16.4.2018
 //
 
-#ifndef UART_H
-#define UART_H
+
 
 // Libraries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_ints.h"
@@ -27,7 +31,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-
+// Function decelerations
 void initialiseUSB_UART (void);
 //Initialises the UART modules per the #defines.
 

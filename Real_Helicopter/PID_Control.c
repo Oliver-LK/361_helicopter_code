@@ -15,82 +15,90 @@
 #include "PID_Control.h"
 #include "buttons4.h"
 #include "UART.h"
-// Global Constants
-#define TAIL_PWM_DUTY_MAX 65
-#define TAIL_PWM_DUTY_MIN 13
-
-#define MAIN_PWM_DUTY_MAX 70
-#define MAIN_PWM_DUTY_MIN 15
 
 
+
+
+// PID gains
 gains_t YAW_GAINS = {300, 500, 2, -100};
 gains_t ALT_GAINS = {10 , 0, 1, -100};
 
 static int32_t adc_offset = 0;
 
-//static int16_t previous_desired_pos = 0;
 static int8_t yaw_incr = 0;
 
 void set_desired_pos(pos_t* desired_pos) {
-
+    // Sets the desired position struct of the helicopter
+    // based on the buttons pushed
 
     if(checkButton(UP) == PUSHED) {
         desired_pos->alt -= TEN_PERCENT_CHANGE; // Up button increases altitude
         if (desired_pos->alt < ALT_MAX) {   // Ensures the desired altitude can never exceed 95%.
             desired_pos->alt = ALT_MAX;
+
         }
+
     } else if (checkButton(DOWN) == PUSHED) {
         desired_pos->alt += TEN_PERCENT_CHANGE; // Down button increases altitude
-        if (desired_pos->alt > adc_offset - 50) {   // Ensures the desired altitude can never drop below 5%.
-            desired_pos->alt = adc_offset - 50;
+        if (desired_pos->alt > adc_offset - ADC_HOVER_OFFSET) {   // Ensures the desired altitude can never drop below 5%.
+            desired_pos->alt = adc_offset - ADC_HOVER_OFFSET;
+
         }
+
     } else if (checkButton(LEFT) == PUSHED) {
        yaw_incr--;  //Anticlockwise is negative.
+
    } else if (checkButton(RIGHT) == PUSHED) {
        yaw_incr++; //Clockwise is negative.
+
    }
 
-   if (yaw_incr > 12) {
+   if (yaw_incr > SWITCH_YAW_DIRECTION_COUNT) {
+       yaw_incr -= DIRECTION_YAW_SWITCH;
 
-       yaw_incr -= 24;
-   } else if (yaw_incr < -12) {
+   } else if (yaw_incr < - SWITCH_YAW_DIRECTION_COUNT) {
+       yaw_incr += DIRECTION_YAW_SWITCH;
 
-       yaw_incr += 24;
    }
-   desired_pos->yaw = (yaw_incr * 15*448)/360; //Calculates the desired yaw.
+
+   desired_pos->yaw = (yaw_incr * YAW_STEP_SIZE * FULL_YAW_CYCLE) / CIRCLE_DEG; //Calculates the desired yaw.
 
 }
 
 
 int16_t alt_controller(int32_t desired_position, int32_t current_position)
 {
-
+    // Altitude PI controller. Operates at approximately 10kHz
+    gains_t gains = ALT_GAINS;
     static int16_t slow_tick = 0;
-
     static uint16_t last_desired_position = 0;
 
-    gains_t gains = ALT_GAINS;
-    //if (desired_position == previous_desired_pos) {
-   int32_t error =  desired_position - current_position;
+    int32_t error =  desired_position - current_position;
 
+    // PI equation based on error
+    int32_t PWM_duty = gains.Kp * error  + gains.Ki * alt_accumulated_error;// + gains.Kd * (error - pre_yaw_error); //Previous error will cause some trouble, so only have PI implemented at the moment.
+    PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
 
-   int32_t PWM_duty = gains.Kp * error  + gains.Ki * alt_accumulated_error;// + gains.Kd * (error - pre_yaw_error); //Previous error will cause some trouble, so only have PI implemented at the moment.
-   PWM_duty /= gains.divisor; //Reduces duty cycle to reasonable size
-
+    // PWM duty cycle limiter
     if(PWM_duty > MAIN_PWM_DUTY_MAX) {
         PWM_duty = MAIN_PWM_DUTY_MAX; //Ensures the duty cycle does not exceed the maximum of PWM_DUTY_MAX.
+
     } else if (PWM_duty < MAIN_PWM_DUTY_MIN) {
         PWM_duty = MAIN_PWM_DUTY_MIN; //Ensures the duty cycle does not drop below the minimum of PWM_DUTY_MIN.
     }
 
+    // Sets the accumulated integral error to zero when the desired postion changes.
     if (desired_position != last_desired_position) {
             alt_accumulated_error = 0;
     }
 
-    if (slow_tick > 1000 && alt_accumulated_error < 5000 && alt_accumulated_error > -5000 ) {
+    // Integral error accumulator if conditions are met
+    if (slow_tick > ALT_I_SAMPLE_RATE && alt_accumulated_error < ALT_I_MAX && alt_accumulated_error > - ALT_I_MAX ) {
             alt_accumulated_error += error;
             slow_tick = 0;
     }
+
+    last_desired_position = desired_position;
 
     //prev_yaw_error = error;
     //alt_accumulated_error += error;
@@ -101,10 +109,7 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
     }*/
     //previous_desired_pos = desired_position;
 
-    last_desired_position = desired_position;
-
     slow_tick++;
-
 
     return PWM_duty;
 }
@@ -113,38 +118,41 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
 
 int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 {
+    // Altitude PID controller. Operates at approximately 10kHz
     gains_t gains = YAW_GAINS;
     static int16_t slow_tick = 0;
     static int16_t slow_tick1 = 0;
     static int16_t slow_tick2 = 0;
+    static int32_t last_desired_position = 0;
 
+    int32_t error =  desired_position - current_position;
+   
+    // Optimisms the rotation direction
+    if (error > HALF_YAW_CYCLE) {
+        error -= FULL_YAW_CYCLE;
 
+    } else if (error < - HALF_YAW_CYCLE - 1) {
+        error += FULL_YAW_CYCLE;
 
-    //if (desired_position == previous_desired_pos) {
-   int32_t error =  desired_position - current_position;
-   static int32_t last_desired_position = 0;
+    }
 
-   if (error > 224) {
+    //  Yaw PID calculation
+    int16_t yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor; //Previous error will cause some trouble, so only have PI implemented at the moment.
 
-       error -= 448;
-   } else if (error < -223) {
-
-          error += 448;
-   }
-
-   int16_t yaw_PWM_duty = (gains.Kp * error  + gains.Ki * yaw_accumulated_error  + gains.Kd * (derivative_error)) / gains.divisor; //Previous error will cause some trouble, so only have PI implemented at the moment.
-
+    // PWM duty cycle limiter
     if(yaw_PWM_duty > TAIL_PWM_DUTY_MAX) {
         yaw_PWM_duty = TAIL_PWM_DUTY_MAX; //Ensures the duty cycle does not exceed the maximum of PWM_DUTY_MAX.
     } else if (yaw_PWM_duty < TAIL_PWM_DUTY_MIN) {
         yaw_PWM_duty = TAIL_PWM_DUTY_MIN; //Ensures the duty cycle does not drop below the minimum of PWM_DUTY_MIN.
     }
 
+    // Sets the accumulated integral error to zero when the desired postion changes.
     if (desired_position != last_desired_position) {
                 yaw_accumulated_error = 0;
     }
 
-    if (slow_tick > 500) {
+    // Integral error accumulator if conditions are met for correct direction
+    if (slow_tick > YAW_I_SAMPLE_RATE) {
 
         if (error > 0 && yaw_accumulated_error < YAW_T_MAX) {
             yaw_accumulated_error += error;
@@ -154,15 +162,18 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
 
         }
 
-
         slow_tick = 0;
     }
 
-    if (slow_tick2 > 3000) {
+    last_desired_position = desired_position;
+
+    // Derivitive error calculation
+    if (slow_tick2 > YAW_D_SAMPLE_RATE) {
         slow_tick2 = 0;
         derivative_error = (yaw_prev_pos- current_position);
         yaw_prev_pos = current_position;
     }
+
 
     if(slow_tick1 > 10000) {
         slow_tick1 = 0;
@@ -181,50 +192,16 @@ int16_t yaw_controller(int32_t desired_position, int32_t current_position)
         usprintf (statusStr, "Yaw D: %4i \r\n",derivative_error); // * usprintf
         UARTSend (statusStr);
 
-
-        }
-
-
-    last_desired_position = desired_position;
-
-
-//    if(error < 2 && error > -2) {
-//        yaw_accumulated_error = 0;
-//    }
-
-    /*} else {
-
-        accumulated_error = 0; //If the desired position changes, the accumulated error is reset to combat integral windup.
-    }*/
-    //previous_desired_pos = desired_position;
-
-//    pre_yaw_error[9] = error;
-//    int16_t index = 0;
-//
-//    // CANT FIGURE EOUT WHY LOOP ISNT WORKING
-////    for (index = 0; index < 8; index++) {
-////        pre_yaw_error[index] = pre_yaw_error[index + 1];
-////    }
-//    pre_yaw_error[0] = pre_yaw_error[1];
-//    pre_yaw_error[1] = pre_yaw_error[2];
-//    pre_yaw_error[2] = pre_yaw_error[3];
-//    pre_yaw_error[3] = pre_yaw_error[4];
-//    pre_yaw_error[4] = pre_yaw_error[5];
-//    pre_yaw_error[5] = pre_yaw_error[6];
-//    pre_yaw_error[6] = pre_yaw_error[7];
-//    pre_yaw_error[7] = pre_yaw_error[8];
-//    pre_yaw_error[8] = pre_yaw_error[9];
-
+    }
 
     slow_tick++;
     slow_tick1++;
     slow_tick2++;
+
     return yaw_PWM_duty;
-
-
 }
 
-
+// Debugging functions
 int32_t return_iyaw_error(void){
 
     return yaw_accumulated_error;
@@ -242,10 +219,7 @@ void reset_yaw_incr(void) {
 void reset_yaw_accum(void) {
     yaw_accumulated_error = 0;
 }
-//int32_t return_prepre_yaw_error(void){
-//    return pre_yaw_error[0];
-//}
-//
+
 void initialise_adc_offset (int32_t init_adc_off) {
 
     adc_offset = init_adc_off;
