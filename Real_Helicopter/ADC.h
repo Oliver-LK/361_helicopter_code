@@ -1,3 +1,6 @@
+#ifndef ADC_H
+#define ADC_H
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
@@ -5,9 +8,6 @@
 //                 
 // **********************************************************
 
-
-#ifndef ADC_H
-#define ADC_H
 // Libraries
 #include <stdint.h>
 #include <stdbool.h>
@@ -31,17 +31,11 @@
 #define BUF_SIZE 16
 #define SAMPLE_RATE_HZ 100 //Sets the sample rate of the ADC to 100 Hz by triggering a sampling interrupt at 100Hz.
 
-
-
 // Global Variables
 circBuf_t g_inBuffer;       // Buffer of size BUF_SIZE integers (sample values)
 
 
-
-//uint32_t g_ulSampCnt;       // Counter for the interrupts
-
 // Function declarations
-
 void ADCIntHandler(void);
 //Tells the ADC to take a sample when triggered by SysTickIntHandler.
 

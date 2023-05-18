@@ -42,7 +42,7 @@ enum butStates {RELEASED = 0, PUSHED, NO_CHANGE};
 #define RIGHT_BUT_PORT_BASE  GPIO_PORTF_BASE
 #define RIGHT_BUT_PIN  GPIO_PIN_0
 #define RIGHT_BUT_NORMAL  true
-//Switch definition
+// Switch definition
 #define SWITCH_PERIPH  SYSCTL_PERIPH_GPIOA
 #define SWITCH_PORT_BASE  GPIO_PORTA_BASE
 #define SWITCH_PIN  GPIO_PIN_7

@@ -5,6 +5,7 @@
 //                 
 // ***********************************************************
 
+
 // Libraries
 #include <stdint.h>
 #include <stdbool.h>
@@ -24,9 +25,6 @@
 #include "OrbitOLED/OrbitOLEDInterface.h"
 #include "ADC.h"
 #include "display.h"
-
-
-
 
 
 
@@ -70,7 +68,7 @@ void initADC (void)
     // on the ADC sequences and steps, refer to the LM3S1968 datasheet.
     ADCSequenceStepConfigure(ADC0_BASE, 3, 0, ADC_CTL_CH9 | ADC_CTL_IE |
                              ADC_CTL_END);
-
+                             
     //
     // Since sample sequence 3 is now configured, it must be enabled.
     ADCSequenceEnable(ADC0_BASE, 3);
@@ -85,4 +83,3 @@ void initADC (void)
 
 
 }
-

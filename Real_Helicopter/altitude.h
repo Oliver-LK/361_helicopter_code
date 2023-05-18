@@ -1,3 +1,6 @@
+#ifndef ALTITUDE_H
+#define ALTITUDE_H
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 17/4/2023
@@ -5,9 +8,6 @@
 //
 // **********************************************************
 
-
-#ifndef ALTITUDE_H
-#define ALTITUDE_H
 
 // Libraries
 #include <stdint.h>
@@ -33,14 +33,11 @@
 #define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
 #define ALT_MAX 1600 //5% of the maximum voltage, which is 95% above 0 altitude.
 
-
+// Function decelerations
 int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset);
 //Returns calculates and returns altitude percentage, avoiding the use of global variables.
 
-
 int32_t give_adc_av(void);
-
-//uint16_t give_adc_offset(void);
-//int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
+// Returns the average adv value from teh circular buffer
 
 #endif

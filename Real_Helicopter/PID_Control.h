@@ -1,3 +1,6 @@
+#ifndef PID_CONTROL_H
+#define PID_CONTROL_H
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
@@ -5,9 +8,6 @@
 //
 // ***********************************************************
 
-
-#ifndef PID_CONTROL_H
-#define PID_CONTROL_H
 
 // Libraries
 #include <stdint.h>
@@ -24,6 +24,7 @@ typedef struct {
     int16_t yaw;
 
 } pos_t;
+// Posistoin struct containing all positional data of the helicopter
 
 typedef struct {
 
