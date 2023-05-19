@@ -63,4 +63,5 @@ bool is_calibrated(void);
 int8_t return_state(void);
 // Returns the state of the helicopter.
 
+void abs_yaw_ISR(void);
 #endif
