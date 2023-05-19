@@ -4,7 +4,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 17/4/2023
-// PURPOSE       : Altitude module
+// PURPOSE       : Reads and calculates the altitude of the helicopter. 
 //
 // **********************************************************
 

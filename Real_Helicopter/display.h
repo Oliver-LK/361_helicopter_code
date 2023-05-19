@@ -2,7 +2,7 @@
 #define DISPLAY_H
 
 // ***********************************************************
-// AUTHOR        : Ben Stirling and Oliver Clements 
+// AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones  
 // CREATE DATE   : 17/3/2023
 // PURPOSE       : Modules that controls the LED display on
 //                 Tiva board

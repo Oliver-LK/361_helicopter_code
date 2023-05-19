@@ -4,7 +4,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
-// PURPOSE       : PID contollers for yaw and alt
+// PURPOSE       : PID contollers for controlling the yaw and altitude of the helicopter. 
 //
 // ***********************************************************
 
@@ -26,22 +26,23 @@
 #define MAIN_PWM_DUTY_MAX 68
 #define MAIN_PWM_DUTY_MIN 15
 
-#define ADC_HOVER_OFFSET 50
+#define ADC_HOVER_OFFSET  50
 
-#define HALF_YAW_CYCLE 224
-#define FULL_YAW_CYCLE 448
-#define YAW_T_MAX 2700
+#define HALF_YAW_CYCLE    224
+#define FULL_YAW_CYCLE    448
 
-#define ALT_I_MAX 5000
-#define ALT_I_SAMPLE_RATE 1000
-#define ALT_T_MAX 9000
 
-#define YAW_I_SAMPLE_RATE 500
-#define YAW_D_SAMPLE_RATE 3000
+#define ALT_I_MAX           5000
+#define ALT_I_SAMPLE_RATE   1000
+#define ALT_T_MAX           9000
 
-#define SWITCH_YAW_DIRECTION_COUNT 12
-#define DIRECTION_YAW_SWITCH 24
-#define YAW_STEP_SIZE 15
+#define YAW_I_SAMPLE_RATE   500
+#define YAW_D_SAMPLE_RATE   3000
+#define YAW_T_MAX           2700
+
+#define SWITCH_YAW_DIRECTION_COUNT  12
+#define DIRECTION_YAW_SWITCH        24
+#define YAW_STEP_SIZE               15
 
 #define TEN_PERCENT_CHANGE ((ALT_MIN - ALT_MAX) * 10 ) / 100
 

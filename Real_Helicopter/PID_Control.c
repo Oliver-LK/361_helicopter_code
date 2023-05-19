@@ -1,7 +1,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
-// PURPOSE       : PID contollers for yaw and alt
+// PURPOSE       : PID contollers for controlling the yaw and altitude of the helicopter. 
 //
 // ***********************************************************
 

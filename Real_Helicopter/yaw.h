@@ -5,7 +5,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 04/05/2023
-// PURPOSE       : Yaw Module
+// PURPOSE       : Monitors and calculates helicopter yaw. 
 //
 // ***********************************************************
 

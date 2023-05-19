@@ -1,15 +1,12 @@
 #ifndef UART_H
 #define UART_H
 
-//********************************************************
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements, derived from code by Phil Bones
+// CREATE DATE   : 04/05/2023
+// PURPOSE       : Enables serial transmissions to a console. 
 //
-// UART.h - derived from uartDemo.c by Prof. Phil Bones.
-//
-//
-//
-// Author:  P.J. Bones  UCECE
-// Last modified:   16.4.2018
-//
+// ***********************************************************
 
 
 // Libraries
@@ -30,10 +27,10 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#define UART_LANDED 0
+#define UART_LANDED   0
 #define UART_TAKE_OFF 1
-#define UART_FLYING 2
-#define UART_LANDING 3
+#define UART_FLYING   2
+#define UART_LANDING  3
 
 #define MAX_STR_LEN 16
 char statusStr[MAX_STR_LEN + 1];

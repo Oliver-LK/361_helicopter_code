@@ -1,12 +1,9 @@
-//********************************************************
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements, derived from code by Phil Bones
+// CREATE DATE   : 04/05/2023
+// PURPOSE       : Enables serial transmissions to a console. 
 //
-// UART.c - derived from uartDemo.c by Prof. Phil Bones.
-//
-//
-//
-// Author:  P.J. Bones  UCECE
-// Last modified:   16.4.2018
-//
+// ***********************************************************
 
 // Libraries
 #include <stdint.h>
@@ -30,7 +27,6 @@
 //********************************************************
 // Constants
 //********************************************************
-
 
 #define MAX_STR_LEN 16
 //---USB Serial comms: UART0, Rx:PA0 , Tx:PA1

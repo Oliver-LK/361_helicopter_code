@@ -4,7 +4,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 7/3/2023
-// PURPOSE       : ADC handler 
+// PURPOSE       : Handles ADC peripheral 
 //                 
 // **********************************************************
 

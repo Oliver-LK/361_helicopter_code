@@ -1,16 +1,15 @@
 #ifndef CIRCBUFT_H_
 #define CIRCBUFT_H_
 
-// *******************************************************
-// 
-// circBufT.h
+// ***********************************************************
+// AUTHOR        : P.J. Bones
+// CREATE DATE   : 8.3.2017
+// PURPOSE       : Support for a circular buffer of uint32_t values on the 
+//  			   Tiva processor. 
 //
-// Support for a circular buffer of uint32_t values on the 
-//  Tiva processor.
-// P.J. Bones UCECE
-// Last modified:  7.3.2017
+// **********************************************************
 // 
-// *******************************************************
+
 #include <stdint.h>
 
 // *******************************************************

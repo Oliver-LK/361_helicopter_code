@@ -1,18 +1,13 @@
 #ifndef BUTTONS_H_
 #define BUTTONS_H_
 
-// *******************************************************
-// buttons4.h
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones
+// CREATE DATE   : 17/4/2023
+// PURPOSE       : Handles all the button peripherals. 
 //
-// Support for a set of FOUR specific buttons on the Tiva/Orbit.
-// ENCE361 sample code.
-// The buttons are:  UP and DOWN (on the Orbit daughterboard) plus
-// LEFT and RIGHT on the Tiva.
-//
-// Ben Stirling and Oliver Clements, based on code by P.J. Bones UCECE
-// Last modified:  18/5/23
+// **********************************************************
 // 
-// *******************************************************
 
 #include <stdint.h>
 #include <stdbool.h>

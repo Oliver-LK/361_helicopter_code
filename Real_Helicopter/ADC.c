@@ -1,7 +1,7 @@
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones. 
 // CREATE DATE   : 7/3/2023
-// PURPOSE       : ADC handler 
+// PURPOSE       : Handles ADC peripheral
 //                 
 // ***********************************************************
 
