@@ -105,19 +105,19 @@ void UART_transmit(uint8_t heli_state, uint8_t alt_PWM, uint8_t yaw_PWM, int16_t
     usprintf (statusStr, "Yaw Duty: %4i \r\n", yaw_PWM); // * usprintf
     UARTSend (statusStr);
 
-    if (heli_state == 0) {
+    if (heli_state == UART_LANDED) {
         usprintf (statusStr, "State: Landed \r\n"); // * usprintf
         UARTSend (statusStr);
 
-    } else if(heli_state == 1) {
+    } else if(heli_state == UART_TAKE_OFF) {
         usprintf (statusStr, "State: Take off \r\n"); // * usprintf
         UARTSend (statusStr);
 
-    } else if(heli_state == 2) {
+    } else if(heli_state == UART_FLYING) {
         usprintf (statusStr, "State: Flying \r\n"); // * usprintf
         UARTSend (statusStr);
 
-    } else if (heli_state == 3) {
+    } else if (heli_state == UART_LANDING) {
         usprintf (statusStr, "State: Landing \r\n"); // * usprintf
         UARTSend (statusStr);
     }

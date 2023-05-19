@@ -17,8 +17,6 @@
 #include "UART.h"
 
 
-
-
 // PID gains
 gains_t YAW_GAINS = {90, 200, 1, -100};
 gains_t ALT_GAINS = {500 , 0, 5, -1000};
@@ -87,11 +85,6 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
         PWM_duty = MAIN_PWM_DUTY_MIN; //Ensures the duty cycle does not drop below the minimum of PWM_DUTY_MIN.
     }
 
-    // Sets the accumulated integral error to zero when the desired position changes.
-//    if (desired_position != last_desired_position) {
-//            alt_accumulated_error = 0;
-//    }
-
     // Integral error accumulator if conditions are met
     if (slow_tick > ALT_I_SAMPLE_RATE) {
 
@@ -106,30 +99,7 @@ int16_t alt_controller(int32_t desired_position, int32_t current_position)
         slow_tick = 0;
     }
 
-//    if(slow_tick1 > 10000) {
-//        slow_tick1 = 0;
-//        usprintf (statusStr, "============ \r\n"); // * usprintf
-//        UARTSend (statusStr);
-//        usprintf (statusStr, "Alt Error: %4i \r\n", error); // * usprintf
-//        UARTSend (statusStr);
-//        usprintf (statusStr, "Alt Desired: %4i \r\n", desired_position); // * usprintf
-//        UARTSend (statusStr);
-//        usprintf (statusStr, "Alt Current: %4i \r\n", current_position); // * usprintf
-//        UARTSend (statusStr);
-//        usprintf (statusStr, "Alt Duty: %4i \r\n", PWM_duty); // * usprintf
-//        UARTSend (statusStr);
-//        usprintf (statusStr, "Alt I: %4i \r\n", alt_accumulated_error); // * usprintf
-//        UARTSend (statusStr);
-////        usprintf (statusStr, "Alt D: %4i \r\n", derivative_error); // * usprintf
-////        UARTSend (statusStr);
-//
-//    }
-
-    //last_desired_position = desired_position;
-
     slow_tick++;
-//    slow_tick1++;
-
 
     return PWM_duty;
 }

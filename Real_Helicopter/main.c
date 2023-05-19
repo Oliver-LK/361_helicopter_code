@@ -246,8 +246,6 @@ int main(void) {
             break;
         }
 
-
-
         //Calculates the altitude using the values stored in the circular buffer.
         adc_av =  give_adc_av();
         alt_percentage = give_adc_percent(adc_av, ADC_offset);
@@ -275,7 +273,6 @@ int main(void) {
             display_counter = 0;
 
         }
-
 
         if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6) >= 1 && reset == 0) {
             SysCtlReset();

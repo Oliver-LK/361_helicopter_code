@@ -165,5 +165,3 @@ bool button_event(uint8_t butNum)
         return false;
     }
 }
-
-

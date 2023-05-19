@@ -12,7 +12,6 @@
 //
 
 
-
 // Libraries
 #include <stdint.h>
 #include <stdbool.h>
@@ -31,6 +30,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#define UART_LANDED 0
+#define UART_TAKE_OFF 1
+#define UART_FLYING 2
+#define UART_LANDING 3
+
 #define MAX_STR_LEN 16
 char statusStr[MAX_STR_LEN + 1];
 
@@ -44,4 +48,3 @@ void UARTSend (char *pucBuffer);
 void UART_transmit(uint8_t heli_state, uint8_t alt_PWM, uint8_t yaw_PWM, int16_t alt, int16_t yaw);
 
 #endif
-

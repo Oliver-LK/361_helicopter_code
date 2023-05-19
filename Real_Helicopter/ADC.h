@@ -31,7 +31,6 @@
 // Global Variables
 circBuf_t g_inBuffer;       // Buffer of size BUF_SIZE integers (sample values)
 
-
 // Function declarations
 void ADCIntHandler(void);
 //Tells the ADC to take a sample when triggered by SysTickIntHandler.

@@ -51,8 +51,4 @@ void displayPos(int32_t alt_percentage, int16_t yaw_int, int8_t yaw_decimal, int
 
     usnprintf (string, sizeof(string), "Yaw PWM (%%) %2d", yaw_PWM);
     OLEDStringDraw (string, 0, 3); //Places the line on the 3rd line of the module.
-
-
 }
-
-

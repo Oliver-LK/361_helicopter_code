@@ -25,8 +25,6 @@
 #include "PWM.h"
 
 
-
-
 void initialisePWM (void)
 {
     // Initiation of the hardware for PWM generators
@@ -83,4 +81,3 @@ void setPWM_tail (uint32_t ui32Duty) {
         PWMPulseWidthSet(PWM_TAIL_BASE, PWM_TAIL_OUTNUM,
             ui32Period * ui32Duty / 100);
 }
-

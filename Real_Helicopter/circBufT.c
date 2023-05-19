@@ -67,4 +67,3 @@ void freeCircBuf (circBuf_t * buffer)
 	free (buffer->data);
 	buffer->data = NULL;
 }
-
