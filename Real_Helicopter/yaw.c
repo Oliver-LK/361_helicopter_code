@@ -25,16 +25,22 @@
 #include "ADC.h"
 #include "buttons4.h"
 #include "yaw.h"
+#include "State.h"
+
 #define TICKS_PER_REV 448
 #define DEG_PER_REV 360
 #define PRECISION 100
-#define MAX_REV_THRESHOLD 448/2
-#define MIN_REV_THRESHOLD (-448/2 + 1)
+#define MAX_REV_THRESHOLD TICKS_PER_REV/2
+#define MIN_REV_THRESHOLD (-TICKS_PER_REV/2 + 1)
 
 // Global variables
 static uint8_t prev_yaw_state = 0; // static variable to represent the previous state of the encoder
 static int16_t yaw_counter = 0; //
 
+    if(get_heli_state() == TAKEOFF) {
+        yaw_counter = 0;
+    }
+}
 
 void yaw_ISR(void)
 {
@@ -67,7 +73,6 @@ void yaw_ISR(void)
                     yaw_counter++;
                 } else {
                     yaw_counter--;
-                }
 
                 break;
 
@@ -105,10 +110,8 @@ int8_t yaw_decimal(void)
 {
     // Finds the decimal component of the yaw.
     int8_t decimal = 0;
-    decimal = ((yaw_counter * DEG_PER_REV * PRECISION) / TICKS_PER_REV) % PRECISION;
-    if (decimal >= 10) {
-        decimal /= 10;
-    }
+    decimal = ((yaw_counter * DEG_PER_REV * PRECISION) / TICKS_PER_REV) % PRECISION + 5;
+    decimal /= 10;
     return abs(decimal);
 }
 

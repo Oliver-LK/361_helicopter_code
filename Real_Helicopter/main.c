@@ -100,6 +100,12 @@ void SysTickIntHandler(void)
 
 }
 
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1,
+                   GPIO_BOTH_EDGES);
+
+    GPIOIntRegister(GPIO_PORTB_BASE, yaw_ISR);
+    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_INT_PIN_0 | GPIO_INT_PIN_1);
+}
 
 void do_init(void)
 {
@@ -147,8 +153,17 @@ int main(void) {
     heli_state_t heli_state = LANDED;
 
 
+    gains_t K_yaw = {1,1,1, 1000};
+    gains_t K_alt = {3,1,20, 1000};
+    pos_t desired_pos = {0,0};
+    heli_state_t heli_state = FLYING; // Set to FLYING just for testing. The real helicopter will start in the LANDED state.
+
+    //task_t tasks = {1,1}; //Tasks the helicopter must complete before changing state. Set to 1,1 for testing.
+
     // Enable interrupts to the processor.
     IntMasterEnable();
+    PWMOutputState(PWM_MAIN_BASE, PWM_MAIN_OUTBIT, true);
+    PWMOutputState(PWM_TAIL_BASE, PWM_TAIL_OUTBIT, true);
 
 
     //Delays the system to allow the circular buffer to fill up.
@@ -287,6 +302,10 @@ int main(void) {
             UART_transmit(heli_state, get_alt_PWM(), get_yaw_PWM(), alt_percentage, get_yaw());
             tx_counter = 0;
         }
+
+        /*if(button_event(LEFT) == PUSHED) {
+                    ADC_offset = adc_av; // Sets the new zero-point for the altitude.
+                }*/
 
     }
 
