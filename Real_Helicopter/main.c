@@ -44,21 +44,14 @@
 #define SYS_DELAY 3000000
 #define HOVER_HEIGHT 30
 
-
-
-
 //Global variable declarations
 static uint16_t display_counter;                    //Counter to regulate the display updating.    
 static uint16_t button_counter;                     //Counter to regulate the button and switch polling.
 static uint16_t tx_counter;                         //Counter to regulate the serial transmission speed. 
 
-
-
 //Prototype function declarations
 void SysTickIntHandler(void);
 //Generates an interrupt at SAMPLE_RATE_HZ frequency which tells the ADC to sample the altitude of the helicopter.
-
-
 
 //Struct and enum declarations
 typedef enum {
@@ -69,7 +62,6 @@ typedef enum {
     LANDING
 
 } heli_state_t; //Represents the state of the helicopter for the finite state machine. 
-
 
 
 //Function definitions
@@ -93,6 +85,7 @@ void initClock (void)
     SysCtlPWMClockSet(PWM_DIVIDER_CODE);
 }
 
+
 void SysTickIntHandler(void)
 {
     // The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
@@ -106,6 +99,7 @@ void SysTickIntHandler(void)
     tx_counter++;
 
 }
+
 
 void do_init(void)
 {
@@ -127,9 +121,6 @@ void do_init(void)
 }
 
 //#############################################  END OF INITIALISATION ########################################
-
-
-
 
 
 int main(void) {
