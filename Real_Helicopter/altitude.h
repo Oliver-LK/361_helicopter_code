@@ -1,3 +1,6 @@
+#ifndef ALTITUDE_H
+#define ALTITUDE_H
+
 // ***********************************************************
 // AUTHOR        : Ben Stirling and Oliver Clements
 // CREATE DATE   : 17/4/2023
@@ -5,9 +8,6 @@
 //
 // **********************************************************
 
-
-#ifndef ALTITUDE_H
-#define ALTITUDE_H
 
 // Libraries
 #include <stdint.h>
@@ -29,17 +29,16 @@
 #include "ADC.h"
 #include "buttons4.h"
 
+// Predefined maximum and minimum altitudes. 
+#define ALT_MIN 3015 //95%  of the maximum voltage, which is 5% above 0 altitude.
+#define ALT_MAX 1600 //5% of the maximum voltage, which is 95% above 0 altitude.
+#define ADC_range (ALT_MIN - ALT_MAX) // Voltage range over which the rig operates. 
 
-
-
-
+// Function Declarations
 int32_t give_adc_percent(int32_t adc_av, int32_t ADC_offset);
-//Returns calculates and returns altitude percentage, avoiding the use of global variables.
-
+//Calculates and returns altitude percentage, avoiding the use of global variables.
 
 int32_t give_adc_av(void);
-
-//uint16_t give_adc_offset(void);
-//int32_t percentage_calc(int32_t adc_av, int32_t ADC_offset);
+// Returns the average ADC value from the circular buffer.
 
 #endif

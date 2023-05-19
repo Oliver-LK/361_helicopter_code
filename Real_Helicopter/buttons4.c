@@ -10,8 +10,8 @@
 // Note that pin PF0 (the pin for the RIGHT pushbutton - SW2 on
 //  the Tiva board) needs special treatment - See PhilsNotesOnTiva.rtf.
 //
-// P.J. Bones UCECE
-// Last modified:  7.2.2018
+// Ben Stirling and Oliver Clements, based on code by P.J. Bones UCECE
+// Last modified:  18/5/23
 // 
 // *******************************************************
 
@@ -74,6 +74,20 @@ initButtons (void)
        GPIO_PIN_TYPE_STD_WPU);
     but_normal[RIGHT] = RIGHT_BUT_NORMAL;
 
+    //Left switch PA7 
+    SysCtlPeripheralEnable (L_SWITCH_PERIPH);
+    GPIOPinTypeGPIOInput (L_SWITCH_PORT_BASE, L_SWITCH_PIN);
+    GPIOPadConfigSet (L_SWITCH_PORT_BASE, L_SWITCH_PIN, GPIO_STRENGTH_2MA,
+                      GPIO_PIN_TYPE_STD_WPD);
+     but_normal[UP] = L_SWITCH_NORMAL;
+
+     //Right switch PA6
+     SysCtlPeripheralEnable (R_SWITCH_PERIPH);
+     GPIOPinTypeGPIOInput (R_SWITCH_PORT_BASE, R_SWITCH_PIN);
+     GPIOPadConfigSet (R_SWITCH_PORT_BASE, R_SWITCH_PIN, GPIO_STRENGTH_2MA,
+                       GPIO_PIN_TYPE_STD_WPD);
+      but_normal[UP] = R_SWITCH_NORMAL;
+
 	for (i = 0; i < NUM_BUTS; i++)
 	{
 		but_state[i] = but_normal[i];
@@ -104,6 +118,7 @@ updateButtons (void)
 	but_value[DOWN] = (GPIOPinRead (DOWN_BUT_PORT_BASE, DOWN_BUT_PIN) == DOWN_BUT_PIN);
     but_value[LEFT] = (GPIOPinRead (LEFT_BUT_PORT_BASE, LEFT_BUT_PIN) == LEFT_BUT_PIN);
     but_value[RIGHT] = (GPIOPinRead (RIGHT_BUT_PORT_BASE, RIGHT_BUT_PIN) == RIGHT_BUT_PIN);
+    but_value[L_SWITCH] = (GPIOPinRead (L_SWITCH_PORT_BASE, L_SWITCH_PIN) == L_SWITCH_PIN);
 	// Iterate through the buttons, updating button variables as required
 	for (i = 0; i < NUM_BUTS; i++)
 	{

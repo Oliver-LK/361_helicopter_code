@@ -1,9 +1,10 @@
 // ***********************************************************
-// AUTHOR        : Ben Stirling and Oliver Clements 
+// AUTHOR        : Ben Stirling and Oliver Clements, based off code by Phil Bones. 
 // CREATE DATE   : 7/3/2023
 // PURPOSE       : ADC handler 
 //                 
 // ***********************************************************
+
 
 // Libraries
 #include <stdint.h>
@@ -13,7 +14,6 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/adc.h"
-#include "driverlib/pwm.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -21,28 +21,15 @@
 #include "driverlib/debug.h"
 #include "utils/ustdlib.h"
 #include "circBufT.h"
-#include "OrbitOLED/OrbitOLEDInterface.h"
 #include "ADC.h"
-#include "display.h"
-#define SLOWTICK_RATE_HZ 4
-
-// The interrupt handler for the for SysTick interrupt, which triggers at SAMPLE_RATE_HZ.
-void SysTickIntHandler(void)
-{
-    // Initiate a conversion
-    ADCProcessorTrigger(ADC0_BASE, 3); //Triggers interrupt for the ADC to sample.
-    //g_ulSampCnt++;
-
-}
 
 
-// The handler for the ADC conversion complete interrupt.
+// The handler for the "ADC conversion complete" interrupt.
 // Writes to the circular buffer.
 void ADCIntHandler(void)
 {
     uint32_t ulValue;
 
-    //
     // Get the single sample from ADC0.  ADC_BASE is defined in
     // inc/hw_memmap.h
     ADCSequenceDataGet(ADC0_BASE, 3, &ulValue);
@@ -53,6 +40,7 @@ void ADCIntHandler(void)
     // Clean up, clearing the interrupt
     ADCIntClear(ADC0_BASE, 3);
 }
+
 
 void initADC (void)
 {
@@ -76,7 +64,7 @@ void initADC (void)
     // on the ADC sequences and steps, refer to the LM3S1968 datasheet.
     ADCSequenceStepConfigure(ADC0_BASE, 3, 0, ADC_CTL_CH9 | ADC_CTL_IE |
                              ADC_CTL_END);
-
+                             
     //
     // Since sample sequence 3 is now configured, it must be enabled.
     ADCSequenceEnable(ADC0_BASE, 3);
@@ -88,5 +76,6 @@ void initADC (void)
     //
     // Enable interrupts for ADC0 sequence 3 (clears any outstanding interrupts)
     ADCIntEnable(ADC0_BASE, 3);
-}
 
+
+}

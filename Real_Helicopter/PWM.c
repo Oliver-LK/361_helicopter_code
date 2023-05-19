@@ -1,5 +1,15 @@
+// ***********************************************************
+// AUTHOR        : Ben Stirling and Oliver Clements
+// CREATE DATE   : 7/3/2023
+// PURPOSE       : PWM configuration
+//
+// ***********************************************************
+
+// Libraries
 #include <stdint.h>
 #include <stdbool.h>
+
+// Modules and drivers
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_ints.h"
@@ -9,26 +19,17 @@
 #include "driverlib/pwm.h"
 #include "driverlib/systick.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/interrupt.h""
+#include "driverlib/interrupt.h"
 #include "utils/ustdlib.h"
 #include "stdlib.h"
 #include "PWM.h"
 
 
-void
-setPWM_main (uint32_t ui32Duty)
-{
-    // Calculate the PWM period corresponding to the freq.
-    uint32_t ui32Period =
-        SysCtlClockGet() / PWM_DIVIDER / PWM_START_RATE_HZ;
 
-    PWMGenPeriodSet(PWM_MAIN_BASE, PWM_MAIN_GEN, ui32Period);
-    PWMPulseWidthSet(PWM_MAIN_BASE, PWM_MAIN_OUTNUM,
-        ui32Period * ui32Duty / 100);
-}
 
 void initialisePWM (void)
 {
+    // Initiation of the hardware for PWM generators
     SysCtlPeripheralEnable(PWM_MAIN_PERIPH_PWM);
     SysCtlPeripheralEnable(PWM_MAIN_PERIPH_GPIO);
 
@@ -61,7 +62,16 @@ void initialisePWM (void)
 }
 
 
+void setPWM_main (uint32_t ui32Duty)
+{
+    // Calculate the PWM period corresponding to the freq.
+    uint32_t ui32Period =
+        SysCtlClockGet() / PWM_DIVIDER / PWM_START_RATE_HZ;
 
+    PWMGenPeriodSet(PWM_MAIN_BASE, PWM_MAIN_GEN, ui32Period);
+    PWMPulseWidthSet(PWM_MAIN_BASE, PWM_MAIN_OUTNUM,
+        ui32Period * ui32Duty / 100);
+}
 
 void setPWM_tail (uint32_t ui32Duty) {
 
